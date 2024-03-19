@@ -47,12 +47,11 @@
     </header>
     <div class="login">
         <div class="login-form">
-            <form action="">
+            <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="POST">
                 <h1>Přihlášení</h1>
-                    <input id="Login-email" class="login-input" type="text" placeholder="Emailová adresa" required title="Emailová adresa">
+                    <input id="username" name="username" class="login-input" type="text" placeholder="Emailová adresa" required title="Emailová adresa">
                 
-                
-                    <input id="Login-password" class="login-input" type="password" placeholder="Heslo" required title="Heslo">
+                    <input id="password" name="password" class="login-input" type="password" placeholder="Heslo" required title="Heslo">
                 
                 <div class="login-bottom">
                     <div>
@@ -62,7 +61,7 @@
                         <a href="./forgot-password.html">Zapomněli jste heslo?</a>
                     </div>
                     
-                    <a href="./my-account.html"> <button type="submit" class="login-submit">Přihlásit </button></a>
+                    <button type="submit" class="login-submit">Přihlásit </button>
                     
                         
                     <p><a href="./registration.html">Nemáte účet a chcete se registrovat?</a></p>
@@ -88,3 +87,99 @@
 </body>
 
 </html>
+
+<?php
+// define variables and set to empty values
+$error = false;
+$username = $password = "";
+$errorMsg = "V zadaném formuláři nebyly vyplněny správně tato pole: ";
+
+include "kitlab_db.php";
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $username = process_input($_POST["username"]);
+
+    $password = process_input($_POST["password"]);
+
+    //sql query select na zadaný username
+    $sql = "SELECT * FROM users WHERE user_name='$username'";
+
+    //pošle query do databáze
+    $result = mysqli_query($mysqli, $sql);
+    
+    if (mysqli_num_rows($result) === 1) {
+
+        $row = mysqli_fetch_assoc($result);
+
+        if ($row['username'] === $username && $row['password'] === $password) {
+            //uživatel zadal jméno a heslo správně, je přihlášený
+            
+            redirect("./my-account.html");
+
+            exit();
+        }
+    }
+
+    //if($GLOBALS['error']){
+        //show_alert_box($GLOBALS['errorMsg']);
+    //}
+    //else{
+        //redirect("./my-account.php");
+    //}
+}
+
+function process_input($data) {
+    $data = trim($data);
+    $data = stripslashes($data);
+    $data = htmlspecialchars($data);
+    return $data;
+  }
+function validate_name($name){
+    if (!preg_match("~^[\p{Latin} ]+$~u",$name)) {
+        show_alert_box("Ve jméně musí být jen písmena či mezery");
+        exit();
+      }
+  }
+
+function validate_email($email){
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        show_alert_box("Formát emailu není správný");
+        exit();
+      }
+}
+
+function validate_password($password){
+    if (!preg_match("/^[0-9]{9}$/",$password)) {
+        show_alert_box("V telefonním čísle mohou být pouze číslice (bez mezer a předvolby). Těchto číslic musí být přesně 9 (české telefonní číslo)");
+        exit();
+      }
+  }
+
+function check_age($dob){
+    $today = date("Y-m-d");
+    $diff = date_diff(date_create($dob), date_create($today));
+    $age = $diff->format('%y');
+    if($age < 80){
+        show_alert_box("Minimální věk pro registraci je 80 let.");
+        exit();
+    }
+}
+
+
+function error_msg_append($text){
+    if($GLOBALS['error']){
+        $GLOBALS['errorMsg'] .= ", ";
+    }
+    $GLOBALS['errorMsg'] .= $text;
+    $GLOBALS['error'] = true;
+}
+
+function show_alert_box($message) {
+    echo "<script>alert('$message');</script>"; 
+}
+
+function redirect($url, $statusCode = 303)
+{
+   header('Location: ' . $url, true, $statusCode);
+   die();
+}
