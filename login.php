@@ -49,9 +49,9 @@
         <div class="login-form">
             <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="POST">
                 <h1>Přihlášení</h1>
-                    <input id="username" name="username" class="login-input" type="text" placeholder="Emailová adresa" required title="Emailová adresa">
+                    <input id="username" name="username" class="login-input" type="text" placeholder="Emailová adresa" value="testuser" required title="Emailová adresa">
                 
-                    <input id="password" name="password" class="login-input" type="password" placeholder="Heslo" required title="Heslo">
+                    <input id="password" name="password" class="login-input" type="password" placeholder="Heslo" value="testuser" required title="Heslo">
                 
                 <div class="login-bottom">
                     <div>
@@ -94,38 +94,37 @@ $error = false;
 $username = $password = "";
 $errorMsg = "V zadaném formuláři nebyly vyplněny správně tato pole: ";
 
-include "kitlab_db.php";
+
+
+
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+    session_start(); 
+    include 'kitlab_db.php';
+
     $username = process_input($_POST["username"]);
 
     $password = process_input($_POST["password"]);
 
     //sql query select na zadaný username
-    $sql = "SELECT * FROM users WHERE user_name='$username'";
+    $sql = "SELECT * FROM users WHERE username=?";
+    $stmt = $mysqli -> prepare($sql);
+    $stmt -> bind_param("s", $username);
+    $stmt -> execute();
+    $result = $stmt -> get_result();
 
-    //pošle query do databáze
-    $result = mysqli_query($mysqli, $sql);
-    
     if (mysqli_num_rows($result) === 1) {
 
-        $row = mysqli_fetch_assoc($result);
+        $row = $result -> fetch_assoc();
 
         if ($row['username'] === $username && $row['password'] === $password) {
+            $_SESSION["username"] = $row['username'];
             //uživatel zadal jméno a heslo správně, je přihlášený
-            
             redirect("./my-account.html");
-
             exit();
         }
     }
-
-    //if($GLOBALS['error']){
-        //show_alert_box($GLOBALS['errorMsg']);
-    //}
-    //else{
-        //redirect("./my-account.php");
-    //}
 }
 
 function process_input($data) {
