@@ -108,16 +108,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = process_input($_POST["password"]);
 
     //sql query select na zadaný username
-    $sql = "SELECT * FROM users WHERE username='$username'";
-
-    //pošle query do databáze
-    $result =  $mysqli -> query($sql);
+    $sql = "SELECT * FROM users WHERE username=?";
+    $stmt = $mysqli -> prepare($sql);
+    $stmt -> bind_param("s", $username);
+    $stmt -> execute();
+    $result = $stmt -> get_result();
 
     if (mysqli_num_rows($result) === 1) {
 
         $row = $result -> fetch_assoc();
 
         if ($row['username'] === $username && $row['password'] === $password) {
+            $_SESSION["username"] = $row['username'];
             //uživatel zadal jméno a heslo správně, je přihlášený
             redirect("./my-account.html");
             exit();
