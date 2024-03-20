@@ -1,5 +1,54 @@
 <?php
-session_start(); ?>
+session_start(); 
+
+// define variables and set to empty values
+$username = $password = "";
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {     
+    include 'kitlab_db.php';
+
+    $username = process_input($_POST["username"]);
+
+    $password = process_input($_POST["password"]);
+
+    //TODO validace inputů?
+
+    //sql query select na zadaný username
+    $sql = "SELECT * FROM users WHERE username=?";
+    $stmt = $mysqli -> prepare($sql);
+    $stmt -> bind_param("s", $username);
+    $stmt -> execute();
+    $result = $stmt -> get_result();
+
+    if (mysqli_num_rows($result) === 1) {
+
+        $row = $result -> fetch_assoc();
+
+        if ($row['username'] === $username && $row['password'] === $password) {
+            $_SESSION['username'] = $row['username'];
+            //uživatel zadal jméno a heslo správně, je přihlášený
+            redirect("./my-account.php");
+        }
+    }else{
+        //špatně zadaný username?
+
+        exit();
+
+    }
+}
+
+function process_input($data) {
+    $data = trim($data);
+    $data = stripslashes($data);
+    $data = htmlspecialchars($data);
+    return $data;
+  }
+function redirect($url, $statusCode = 303) {
+    header('Location: ' . $url, true, $statusCode);
+    exit();
+  }
+
+?>
 
 <!DOCTYPE html>
 <html dir="ltr" lang='cs'>
@@ -90,91 +139,3 @@ session_start(); ?>
 </body>
 
 </html>
-
-<?php
-// define variables and set to empty values
-$error = false;
-$username = $password = "";
-$errorMsg = "V zadaném formuláři nebyly vyplněny správně tato pole: ";
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {     
-    include 'kitlab_db.php';
-
-    $username = process_input($_POST["username"]);
-
-    $password = process_input($_POST["password"]);
-
-    //sql query select na zadaný username
-    $sql = "SELECT * FROM users WHERE username=?";
-    $stmt = $mysqli -> prepare($sql);
-    $stmt -> bind_param("s", $username);
-    $stmt -> execute();
-    $result = $stmt -> get_result();
-
-    if (mysqli_num_rows($result) === 1) {
-
-        $row = $result -> fetch_assoc();
-
-        if ($row['username'] === $username && $row['password'] === $password) {
-            $_SESSION['username'] = $row['username'];
-            //uživatel zadal jméno a heslo správně, je přihlášený
-            redirect("./my-account.php");
-        }
-    }
-}
-
-function process_input($data) {
-    $data = trim($data);
-    $data = stripslashes($data);
-    $data = htmlspecialchars($data);
-    return $data;
-  }
-function validate_name($name){
-    if (!preg_match("~^[\p{Latin} ]+$~u",$name)) {
-        show_alert_box("Ve jméně musí být jen písmena či mezery");
-        exit();
-      }
-  }
-
-function validate_email($email){
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        show_alert_box("Formát emailu není správný");
-        exit();
-      }
-}
-
-function validate_password($password){
-    if (!preg_match("/^[0-9]{9}$/",$password)) {
-        show_alert_box("V telefonním čísle mohou být pouze číslice (bez mezer a předvolby). Těchto číslic musí být přesně 9 (české telefonní číslo)");
-        exit();
-      }
-  }
-
-function check_age($dob){
-    $today = date("Y-m-d");
-    $diff = date_diff(date_create($dob), date_create($today));
-    $age = $diff->format('%y');
-    if($age < 80){
-        show_alert_box("Minimální věk pro registraci je 80 let.");
-        exit();
-    }
-}
-
-
-function error_msg_append($text){
-    if($GLOBALS['error']){
-        $GLOBALS['errorMsg'] .= ", ";
-    }
-    $GLOBALS['errorMsg'] .= $text;
-    $GLOBALS['error'] = true;
-}
-
-function show_alert_box($message) {
-    echo "<script>alert('$message');</script>"; 
-}
-
-function redirect($url, $statusCode = 303)
-{
-   header('Location: ' . $url, true, $statusCode);
-   exit();
-}

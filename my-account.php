@@ -4,7 +4,6 @@ session_start();
 // define variables and set to empty values
 $error = false;
 $fname = $lname = $email = $phone = $street = $city = $zipcode = "";
-//$errorMsg = "V zadaném formuláři nebyly vyplněny správně tato pole: ";
 
 if ($_SERVER["REQUEST_METHOD"] == "GET") {
     
@@ -30,7 +29,6 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
         $GLOBALS['street'] = $row['street'];
         $GLOBALS['city'] = $row['city'];
         $GLOBALS['zipcode'] = $row['zipcode'];
-        echo $fname;
     }
 }
 
