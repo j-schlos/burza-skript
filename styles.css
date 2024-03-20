@@ -507,7 +507,7 @@ footer p{
     color: var(--dark-gray)
 }
 
-#username{
+.login-form #email{
     margin-bottom: 1em;
 }
 
@@ -731,10 +731,14 @@ footer p{
     border: 2px solid rgba(0, 0, 0, 0.2);
     border-radius: 10px;
     font-size: 16px;
-    color: var(--dark-gray);
+    color: var(--black);
     padding: 10px 5px 15px 10px;
     font-family: "Work Sans", Verdana, Geneva, sans-serif;
     margin-bottom: 0.6em;
+}
+
+.Account-btns::placeholder {
+    color: var(--dark-gray);
 }
 
 ul {
@@ -804,18 +808,18 @@ ul {
     display: flex;
     flex-wrap: wrap;
     flex-direction: column;
-    max-width: 90%;
+    align-items: center;
+    max-width: 60%;
     margin: 3rem auto;
 }
 
 .add-advertisement-wrap{
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-around;
+    justify-content: center;
 }
 
 .add-advertisement-form{
-    flex: 50%;
     flex-direction: column;
     align-items: center;
 }
@@ -830,11 +834,12 @@ ul {
 }
 
 .add-advertisement-form form{
-    max-width: 60%;
+    max-width: 100%;
 }
 
 .add-advertisement textarea{
     width: 100%;
+    max-width: 100%;
 }
 
 .add-advertisement-image{
@@ -1153,7 +1158,7 @@ ul {
     border: 2px solid rgba(0, 0, 0, 0.2);
     border-radius: 10px;
     font-size: 16px;
-    color: var(--dark-gray);
+    color: var(--black);
     padding: 10px 5px 15px 10px;
 }
 
@@ -1163,7 +1168,7 @@ ul {
 
 /* ########### tlačítka ############### */
 
-#contact-btn, #insert-images-btn, #add-advertisement-btn, .view-product, .Registration-submit, .login-submit, #reset-password, #pass-change-submit, #change-submit{
+#contact-btn, #add-advertisement-btn, .view-product, .Registration-submit, .login-submit, #reset-password, #pass-change-submit, #change-submit{
     cursor: pointer;
     background: var(--header-nav-blue);
     border: none;
@@ -1176,16 +1181,27 @@ ul {
     background: var(--header-nav-blue-hover);
 }
 
+#insert-images-btn{
+    width: 100%;
+    cursor: pointer;
+    background: var(--white);
+    border: var(--header-nav-blue) 1px solid;
+    border-radius: 6px;
+    color: var(--header-nav-blue);
+    transition: background 0.2s ease-in;
+}
+
 #contact-btn{
     width: 100;
     padding: 15px 0;
 }
 
 #insert-images-btn, #add-advertisement-btn{
-    padding: 15px 25px;
+    padding: 8px;
     display: flex;
     justify-content: center;
     align-items: center;
+    margin-top: 8px;
 }
 
 #reset-password{

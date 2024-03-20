@@ -87,10 +87,10 @@ function redirect($url, $statusCode = 303) {
                 </form>
 
                 <div id="account-buttons">
-                    <a id="header-login-button" class="header-acc-btn header-link" href="login.html">
+                    <a id="header-login-button" class="header-acc-btn header-link" href="login.php">
                         <div class="header-acc-btn-div">Přihlášení</div>
                     </a>
-                    <a id="header-signup-button" class="header-acc-btn header-link" href="registration.html">
+                    <a id="header-signup-button" class="header-acc-btn header-link" href="registration.php">
                         <div class="header-acc-btn-div">Registrace</div>
                     </a>
                 </div>
@@ -116,7 +116,7 @@ function redirect($url, $statusCode = 303) {
                     <button type="submit" class="login-submit">Přihlásit </button>
                     
                         
-                    <p><a href="./registration.html">Nemáte účet a chcete se registrovat?</a></p>
+                    <p><a href="./registration.php">Nemáte účet a chcete se registrovat?</a></p>
                 </div>
                 
             </form>
@@ -129,7 +129,7 @@ function redirect($url, $statusCode = 303) {
                 <li><a class="footer-nav-link" href="./index.html">Domů</a></li>
                 <li><a class="footer-nav-link" href="./stock-exchange.html">Burza</a></li>
                 <li><a class="footer-nav-link" href="./contact.html">Kontakt</a></li>
-                <li><a class="footer-nav-link" href="./my-account.html">Můj účet</a></li>
+                <li><a class="footer-nav-link" href="./my-account.php">Můj účet</a></li>
             </ul>
         </div>
         <hr class="solid">
