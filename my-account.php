@@ -7,16 +7,16 @@ $fname = $lname = $email = $phone = $street = $city = $zipcode = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "GET") {
     
-    if(empty($_SESSION['username'])){
+    if(empty($_SESSION['email'])){
         redirect("./login.php");
     }
     include 'kitlab_db.php';
 
     
-    //sql query select na zadaný username
-    $sql = "SELECT * FROM users WHERE username=?";
+    //sql query select na session email
+    $sql = "SELECT * FROM users WHERE email=?";
     $stmt = $mysqli -> prepare($sql);
-    $stmt -> bind_param("s", $_SESSION['username']);
+    $stmt -> bind_param("s", $_SESSION['email']);
     $stmt -> execute();
     $result = $stmt -> get_result();
 

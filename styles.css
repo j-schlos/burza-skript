@@ -1202,6 +1202,10 @@ ul {
     font-weight:600;
 }
 
+.error-msg{
+    margin-bottom: 0.4em;
+}
+
 @media only screen and (max-width: 1516px) {
     .home-page-pupular-category-button{
         width: 450px;
