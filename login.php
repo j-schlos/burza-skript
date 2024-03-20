@@ -2,21 +2,21 @@
 session_start(); 
 
 // define variables and set to empty values
-$username = $password = "";
+$email = $password = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {     
     include 'kitlab_db.php';
 
-    $username = process_input($_POST["username"]);
+    $email = process_input($_POST["email"]);
 
     $password = process_input($_POST["password"]);
 
     //TODO validace inputů?
 
-    //sql query select na zadaný username
-    $sql = "SELECT * FROM users WHERE username=?";
+    //sql query select na zadaný email
+    $sql = "SELECT * FROM users WHERE email=?";
     $stmt = $mysqli -> prepare($sql);
-    $stmt -> bind_param("s", $username);
+    $stmt -> bind_param("s", $email);
     $stmt -> execute();
     $result = $stmt -> get_result();
 
@@ -24,13 +24,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         $row = $result -> fetch_assoc();
 
-        if ($row['username'] === $username && $row['password'] === $password) {
-            $_SESSION['username'] = $row['username'];
+        if ($row['email'] === $email && $row['password'] === $password) {
+            $_SESSION['email'] = $row['email'];
             //uživatel zadal jméno a heslo správně, je přihlášený
             redirect("./my-account.php");
         }
     }else{
-        //špatně zadaný username?
+        //špatně zadaný email?
 
         exit();
 
@@ -101,7 +101,7 @@ function redirect($url, $statusCode = 303) {
         <div class="login-form">
             <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="POST">
                 <h1>Přihlášení</h1>
-                    <input id="username" name="username" class="login-input" type="text" placeholder="Emailová adresa" value="testuser" required title="Emailová adresa">
+                    <input id="email" name="email" class="login-input" type="text" placeholder="Emailová adresa" value="b.testovaci@hotmail.com" required title="Emailová adresa">
                 
                     <input id="password" name="password" class="login-input" type="password" placeholder="Heslo" value="testuser" required title="Heslo">
                 
