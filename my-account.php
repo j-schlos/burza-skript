@@ -1,3 +1,47 @@
+<?php
+session_start(); 
+
+// define variables and set to empty values
+$error = false;
+$fname = $lname = $email = $phone = $street = $city = $zipcode = "";
+//$errorMsg = "V zadaném formuláři nebyly vyplněny správně tato pole: ";
+
+if ($_SERVER["REQUEST_METHOD"] == "GET") {
+    
+    if(empty($_SESSION['username'])){
+        redirect("./login.php");
+    }
+    include 'kitlab_db.php';
+
+    
+    //sql query select na zadaný username
+    $sql = "SELECT * FROM users WHERE username=?";
+    $stmt = $mysqli -> prepare($sql);
+    $stmt -> bind_param("s", $_SESSION['username']);
+    $stmt -> execute();
+    $result = $stmt -> get_result();
+
+    if (mysqli_num_rows($result) === 1) {
+        $row = $result -> fetch_assoc();
+        $GLOBALS['fname'] = $row['fname'];
+        $GLOBALS['lname'] = $row['lname'];
+        $GLOBALS['email'] = $row['email'];
+        $GLOBALS['phone'] = $row['phone'];
+        $GLOBALS['street'] = $row['street'];
+        $GLOBALS['city'] = $row['city'];
+        $GLOBALS['zipcode'] = $row['zipcode'];
+        echo $fname;
+    }
+}
+
+function redirect($url, $statusCode = 303)
+{
+   header('Location: ' . $url, true, $statusCode);
+   exit();
+}
+
+?>
+
 <!DOCTYPE html>
 <html dir="ltr" lang='cs'>
  <head>
@@ -45,16 +89,16 @@
                 <img class="userImg" src="avatar.png" alt="">
                 <div class="NameContainer">
                     <h2>Osobní údaje</h2>
-                    <input id="Acc-Name-btn" class="Account-btns" type="text" placeholder="Jméno" required title="Textové pole pro Jméno">
-                    <input id="Acc-Surname-btn" class="Account-btns" type="text" placeholder="Příjmení" required title="Textové pole pro Příjmení">
+                    <input id="Acc-Name-btn" class="Account-btns" type="text" placeholder="Jméno" value="<?php echo $fname ?>" required title="Textové pole pro Jméno">
+                    <input id="Acc-Surname-btn" class="Account-btns" type="text" placeholder="Příjmení" value="<?php echo $lname ?>" required title="Textové pole pro Příjmení">
                 </div>
             </div>
     
-                <input id="Acc-Email-btn" class="Account-btns" type="text" placeholder="Emailová adresa" required title="Textové pole pro "Emailovou adresu>
-                <input id="Acc-Phone-btn" class="Account-btns" type="text" placeholder="Telefon" required title="Textové pole pro telefonní číslo">
-                <input id="Acc-Address-btn" class="Account-btns" type="text" placeholder="Adresa" required title="Textové pole pro Ulici">
-                <input id="Acc-City-btn" class="Account-btns" type="text" placeholder="Město" required title="Textové pole pro Město">
-                <input id="Acc-PSC-btn" class="Account-btns" type="text" placeholder="PSČ" required title="Textové pole pro PSČ">
+                <input id="Acc-Email-btn" class="Account-btns" type="text" placeholder="Emailová adresa" value="<?php echo $email ?>" required title="Textové pole pro "Emailovou adresu>
+                <input id="Acc-Phone-btn" class="Account-btns" type="text" placeholder="Telefon" value="<?php echo $phone ?>" required title="Textové pole pro telefonní číslo">
+                <input id="Acc-Address-btn" class="Account-btns" type="text" placeholder="Adresa" value="<?php echo $street ?>" required title="Textové pole pro Ulici">
+                <input id="Acc-City-btn" class="Account-btns" type="text" placeholder="Město" value="<?php echo $city ?>" required title="Textové pole pro Město">
+                <input id="Acc-PSC-btn" class="Account-btns" type="text" placeholder="PSČ" value="<?php echo $zipcode ?>" required title="Textové pole pro PSČ">
     
             <div class="Accout-change-buttons">
                 <button type="submit" id="change-submit">Upravit </button>

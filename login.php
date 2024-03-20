@@ -1,3 +1,6 @@
+<?php
+session_start(); ?>
+
 <!DOCTYPE html>
 <html dir="ltr" lang='cs'>
 
@@ -94,13 +97,7 @@ $error = false;
 $username = $password = "";
 $errorMsg = "V zadaném formuláři nebyly vyplněny správně tato pole: ";
 
-
-
-
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-
-    session_start(); 
+if ($_SERVER["REQUEST_METHOD"] == "POST") {     
     include 'kitlab_db.php';
 
     $username = process_input($_POST["username"]);
@@ -119,10 +116,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $row = $result -> fetch_assoc();
 
         if ($row['username'] === $username && $row['password'] === $password) {
-            $_SESSION["username"] = $row['username'];
+            $_SESSION['username'] = $row['username'];
             //uživatel zadal jméno a heslo správně, je přihlášený
-            redirect("./my-account.html");
-            exit();
+            redirect("./my-account.php");
         }
     }
 }
@@ -180,5 +176,5 @@ function show_alert_box($message) {
 function redirect($url, $statusCode = 303)
 {
    header('Location: ' . $url, true, $statusCode);
-   die();
+   exit();
 }
