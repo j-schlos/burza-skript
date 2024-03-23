@@ -69,9 +69,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <div class="login-form">
             <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="POST">
                 <h1>Přihlášení</h1>
-                    <input id="email" name="email" class="login-input" type="text" placeholder="Emailová adresa" value="b.testovaci@hotmail.com" required title="Emailová adresa">
+                    <input id="email" name="email" class="login-input" type="text" placeholder="Emailová adresa" value="a.prijemny@gmail.com" required title="Emailová adresa">
                 
-                    <input id="password" name="password" class="login-input" type="password" placeholder="Heslo" value="testuser" required title="Heslo">
+                    <input id="password" name="password" class="login-input" type="password" placeholder="Heslo" value="Heslo123" required title="Heslo">
                 
                 <div class="login-bottom">
                     <div>
