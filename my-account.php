@@ -1,6 +1,9 @@
 <?php
 session_start(); 
 
+include 'functions.php';
+include 'kitlab_db.php';
+
 // define variables and set to empty values
 $error = false;
 $fname = $lname = $email = $phone = $street = $city = $zipcode = "";
@@ -32,12 +35,6 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
     }
 }
 
-function redirect($url, $statusCode = 303)
-{
-   header('Location: ' . $url, true, $statusCode);
-   exit();
-}
-
 ?>
 
 <!DOCTYPE html>
@@ -53,7 +50,7 @@ function redirect($url, $statusCode = 303)
  </head>
 <body>
     <header>
-        <img id="header-logo" src="./logo.png" href="./index.html" alt="Logo"></img>
+        <img id="header-logo" src="./logo.png" href="./index.php" alt="Logo"></img>
         <div id="hamburger">
             <span class="bar"></span>
             <span class="bar"></span>
@@ -62,9 +59,9 @@ function redirect($url, $statusCode = 303)
         <div id="hamburger-content">
             <div id="header-first-part" class="header-side">
                 <nav id="header-nav">
-                    <a class="header-nav-link header-link" href="./index.html">Domů</a>
-                    <a class="header-nav-link header-link" href="./stock-exchange.html">Burza</a>
-                    <a class="header-nav-link header-link" href="./contact.html">Kontakt</a>
+                    <a class="header-nav-link header-link" href="./index.php">Domů</a>
+                    <a class="header-nav-link header-link" href="./stock-exchange.php">Burza</a>
+                    <a class="header-nav-link header-link" href="./contact.php">Kontakt</a>
                 </nav>
             </div>
 
@@ -107,9 +104,9 @@ function redirect($url, $statusCode = 303)
             <div class="Account-ads-box">
                 <h2>Moje inzeráty</h2>
                 <ul id="acc-ads-list">
-                    <li><a id="acc-ad1" href="./product-detail.html">Inzerát 1</a></li>
-                    <li><a id="acc-ad2" href="./product-detail.html">Inzerát 2</a></li>
-                    <li><a id="acc-ad3" href="./product-detail.html">Inzerát 3</a></li>
+                    <li><a id="acc-ad1" href="./product-detail.php">Inzerát 1</a></li>
+                    <li><a id="acc-ad2" href="./product-detail.php">Inzerát 2</a></li>
+                    <li><a id="acc-ad3" href="./product-detail.php">Inzerát 3</a></li>
                 </ul>
             </div>
             <div class="Account-purchases-box">
@@ -127,9 +124,9 @@ function redirect($url, $statusCode = 303)
         <div id="footer-nav">
             <img id="footer-logo" src="./logo.png" alt="Logo">
             <ul id="footer-nav-list">
-                <li><a class="footer-nav-link" href="./index.html">Domů</a></li>
-                <li><a class="footer-nav-link" href="./stock-exchange.html">Burza</a></li>
-                <li><a class="footer-nav-link" href="./contact.html">Kontakt</a></li>
+                <li><a class="footer-nav-link" href="./index.php">Domů</a></li>
+                <li><a class="footer-nav-link" href="./stock-exchange.php">Burza</a></li>
+                <li><a class="footer-nav-link" href="./contact.php">Kontakt</a></li>
                 <li><a class="footer-nav-link" href="./my-account.php">Můj účet</a></li>
             </ul>
         </div>

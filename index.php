@@ -1,3 +1,19 @@
+<?php
+session_start();
+
+include 'functions.php';
+include 'kitlab_db.php';
+
+if($_SERVER["REQUEST_METHOD"] == "GET"){
+
+}
+
+if($_SERVER["REQUEST_METHOD"] == "POST"){
+        
+}
+
+?>
+
 <!DOCTYPE html>
 <html dir="ltr" lang='cs'>
  <head>
@@ -11,7 +27,7 @@
  </head>
  <body>
     <header>
-        <img id="header-logo" src="./logo.png" href="./index.html" alt="Logo"></img>
+        <img id="header-logo" src="./logo.png" href="./index.php" alt="Logo"></img>
         <div id="hamburger">
             <span class="bar"></span>
             <span class="bar"></span>
@@ -20,9 +36,9 @@
         <div id="hamburger-content">
             <div id="header-first-part" class="header-side">
                 <nav id="header-nav">
-                    <a class="header-nav-link header-link" href="./index.html">Domů</a>
-                    <a class="header-nav-link header-link" href="./stock-exchange.html">Burza</a>
-                    <a class="header-nav-link header-link" href="./contact.html">Kontakt</a>
+                    <a class="header-nav-link header-link" href="./index.php">Domů</a>
+                    <a class="header-nav-link header-link" href="./stock-exchange.php">Burza</a>
+                    <a class="header-nav-link header-link" href="./contact.php">Kontakt</a>
                 </nav>
             </div>
 
@@ -45,8 +61,8 @@
         <div id="home-page-top-items">
             <h1>Dáváme skriptům nový život a tvé peněžence taktéž...</h1>
             <div id="home-page-buttons">
-                <a href="./stock-exchange.html"><div class="home-page-button">Začít nakupovat</div></a>
-                <a href="./add-advertisement.html"><div class="home-page-button">Přidat inzerát</div></a>
+                <a href="./stock-exchange.php"><div class="home-page-button">Začít nakupovat</div></a>
+                <a href="./add-advertisement.php"><div class="home-page-button">Přidat inzerát</div></a>
             </div>
         </div>
     </div>
@@ -54,7 +70,7 @@
     <div id="most-popular-container">
         <h2 class="home-page-section-title">Nejpopulárnější</h2>
         <div class="home-page-products-container">
-            <a href="./product-detail.html">
+            <a href="./product-detail.php">
                 <div class="home-page-product-card">
                     <img class="home-page-product-card-image" src="./product-card-book.png" alt="Náhled skript">
                     <div class="home-page-product-card-text-container">
@@ -64,7 +80,7 @@
                 </div>
             </a>
 
-            <a href="./product-detail.html">
+            <a href="./product-detail.php">
                 <div class="home-page-product-card">
                     <img class="home-page-product-card-image" src="./product-card-book.png" alt="Náhled skript">
                     <div class="home-page-product-card-text-container">
@@ -74,7 +90,7 @@
                 </div>
             </a>
 
-            <a href="./product-detail.html">
+            <a href="./product-detail.php">
                 <div class="home-page-product-card">
                     <img class="home-page-product-card-image" src="./product-card-book.png" alt="Náhled skript">
                     <div class="home-page-product-card-text-container">
@@ -89,7 +105,7 @@
     <div id="most-recent-container">
         <h2 class="home-page-section-title">Nejnovější</h2>
         <div class="home-page-products-container">
-            <a href="./product-detail.html">
+            <a href="./product-detail.php">
                 <div class="home-page-product-card">
                     <img class="home-page-product-card-image" src="./product-card-book.png" alt="Náhled skript">
                     <div class="home-page-product-card-text-container">
@@ -99,7 +115,7 @@
                 </div>
             </a>
 
-            <a href="./product-detail.html">
+            <a href="./product-detail.php">
                 <div class="home-page-product-card">
                     <img class="home-page-product-card-image" src="./product-card-book.png" alt="Náhled skript">
                     <div class="home-page-product-card-text-container">
@@ -109,7 +125,7 @@
                 </div>
             </a>
 
-            <a href="./product-detail.html">
+            <a href="./product-detail.php">
                 <div class="home-page-product-card">
                     <img class="home-page-product-card-image" src="./product-card-book.png" alt="Náhled skript">
                     <div class="home-page-product-card-text-container">
@@ -124,22 +140,22 @@
     <div id="popular-categories-container">
         <h2 class="home-page-section-title">Populární kategorie</h2>
         <div id="popular-category-buttons-container">
-            <a href="./stock-exchange.html">
+            <a href="./stock-exchange.php">
                 <div class="home-page-pupular-category-button">
                     <p>Kategorie 1</p>
                 </div>
             </a>
-            <a href="./stock-exchange.html">
+            <a href="./stock-exchange.php">
                 <div class="home-page-pupular-category-button">
                     <p>Kategorie 2</p>
                 </div>
             </a>
-            <a href="./stock-exchange.html">
+            <a href="./stock-exchange.php">
                 <div class="home-page-pupular-category-button">
                     <p>Kategorie 3</p>
                 </div>
             </a>
-            <a href="./stock-exchange.html">
+            <a href="./stock-exchange.php">
                 <div class="home-page-pupular-category-button">
                     <p>Kategorie 4</p>
                 </div>
@@ -179,9 +195,9 @@
         <div id="footer-nav">
             <img id="footer-logo" src="./logo.png" alt="Logo">
             <ul id="footer-nav-list">
-                <li><a class="footer-nav-link" href="./index.html">Domů</a></li>
-                <li><a class="footer-nav-link" href="./stock-exchange.html">Burza</a></li>
-                <li><a class="footer-nav-link" href="./contact.html">Kontakt</a></li>
+                <li><a class="footer-nav-link" href="./index.php">Domů</a></li>
+                <li><a class="footer-nav-link" href="./stock-exchange.php">Burza</a></li>
+                <li><a class="footer-nav-link" href="./contact.php">Kontakt</a></li>
                 <li><a class="footer-nav-link" href="./my-account.php">Můj účet</a></li>
             </ul>
         </div>

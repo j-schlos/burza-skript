@@ -1,12 +1,14 @@
 <?php
 session_start(); 
 
+include 'functions.php';
+include 'kitlab_db.php';
+
 // define variables and set to empty values
 $email = $password = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {     
-    include 'kitlab_db.php';
-
+    
     $email = process_input($_POST["email"]);
 
     $password = process_input($_POST["password"]);
@@ -37,17 +39,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
-function process_input($data) {
-    $data = trim($data);
-    $data = stripslashes($data);
-    $data = htmlspecialchars($data);
-    return $data;
-  }
-function redirect($url, $statusCode = 303) {
-    header('Location: ' . $url, true, $statusCode);
-    exit();
-  }
-
 ?>
 
 <!DOCTYPE html>
@@ -65,7 +56,7 @@ function redirect($url, $statusCode = 303) {
 
 <body id="Login-body">
     <header>
-        <img id="header-logo" src="./logo.png" href="./index.html" alt="Logo"></img>
+        <img id="header-logo" src="./logo.png" href="./index.php" alt="Logo"></img>
         <div id="hamburger">
             <span class="bar"></span>
             <span class="bar"></span>
@@ -74,9 +65,9 @@ function redirect($url, $statusCode = 303) {
         <div id="hamburger-content">
             <div id="header-first-part" class="header-side">
                 <nav id="header-nav">
-                    <a class="header-nav-link header-link" href="./index.html">Domů</a>
-                    <a class="header-nav-link header-link" href="./stock-exchange.html">Burza</a>
-                    <a class="header-nav-link header-link" href="./contact.html">Kontakt</a>
+                    <a class="header-nav-link header-link" href="./index.php">Domů</a>
+                    <a class="header-nav-link header-link" href="./stock-exchange.php">Burza</a>
+                    <a class="header-nav-link header-link" href="./contact.php">Kontakt</a>
                 </nav>
             </div>
 
@@ -110,7 +101,7 @@ function redirect($url, $statusCode = 303) {
                         <label>
                             <input id="Remember-cred" type="checkbox"> Pamatovat si údaje
                         </label>
-                        <a href="./forgot-password.html">Zapomněli jste heslo?</a>
+                        <a href="./forgot-password.php">Zapomněli jste heslo?</a>
                     </div>
                     
                     <button type="submit" class="login-submit">Přihlásit </button>
@@ -126,9 +117,9 @@ function redirect($url, $statusCode = 303) {
         <div id="footer-nav">
             <img id="footer-logo" src="./logo.png" alt="Logo">
             <ul id="footer-nav-list">
-                <li><a class="footer-nav-link" href="./index.html">Domů</a></li>
-                <li><a class="footer-nav-link" href="./stock-exchange.html">Burza</a></li>
-                <li><a class="footer-nav-link" href="./contact.html">Kontakt</a></li>
+                <li><a class="footer-nav-link" href="./index.php">Domů</a></li>
+                <li><a class="footer-nav-link" href="./stock-exchange.php">Burza</a></li>
+                <li><a class="footer-nav-link" href="./contact.php">Kontakt</a></li>
                 <li><a class="footer-nav-link" href="./my-account.php">Můj účet</a></li>
             </ul>
         </div>

@@ -1,5 +1,8 @@
 <?php
-session_start(); 
+session_start();
+
+include 'functions.php';
+include 'kitlab_db.php';
 
 // define variables and set to empty values
 $error = false;
@@ -8,8 +11,6 @@ $title = $phone = $email = $price = $description = "";
 $errorMsg = "";
 
 if($_SERVER["REQUEST_METHOD"] == "GET"){
-    include 'kitlab_db.php';
-
     //sql query na select usera podle session emailu
     $sql = "SELECT * FROM users WHERE email=?";
     $stmt = $mysqli -> prepare($sql);
@@ -27,8 +28,6 @@ if($_SERVER["REQUEST_METHOD"] == "GET"){
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {     
-    include 'kitlab_db.php';
-
     $title = process_input($_POST['title']);
 
     $phone = process_input($_POST['phone']);
@@ -50,26 +49,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt -> bind_param("sssss", $title, $price, $description, $image, $userId);
         $stmt -> execute();
 
-        //$_SESSION['email'] = $email;
-        //redirect("./my-account.php");
+        //TODO asi kontrola, že se nahrál inzerát OK do DB, pak přesměrování rovnou na inzerát?
+
     }
 
 }
-
-function show_alert_box($message) {
-    echo "<script>alert('$message');</script>"; 
-}
-
-function process_input($data) {
-    $data = trim($data);
-    $data = stripslashes($data);
-    $data = htmlspecialchars($data);
-    return $data;
-  }
-function redirect($url, $statusCode = 303) {
-    header('Location: ' . $url, true, $statusCode);
-    exit();
-  }
 
 ?>
 
@@ -86,7 +70,7 @@ function redirect($url, $statusCode = 303) {
      </head>
 <body>
     <header>
-        <img id="header-logo" src="./logo.png" href="./index.html" alt="Logo"></img>
+        <img id="header-logo" src="./logo.png" href="./index.php" alt="Logo"></img>
         <div id="hamburger">
             <span class="bar"></span>
             <span class="bar"></span>
@@ -95,9 +79,9 @@ function redirect($url, $statusCode = 303) {
         <div id="hamburger-content">
             <div id="header-first-part" class="header-side">
                 <nav id="header-nav">
-                    <a class="header-nav-link header-link" href="./index.html">Domů</a>
-                    <a class="header-nav-link header-link" href="./stock-exchange.html">Burza</a>
-                    <a class="header-nav-link header-link" href="./contact.html">Kontakt</a>
+                    <a class="header-nav-link header-link" href="./index.php">Domů</a>
+                    <a class="header-nav-link header-link" href="./stock-exchange.php">Burza</a>
+                    <a class="header-nav-link header-link" href="./contact.php">Kontakt</a>
                 </nav>
             </div>
 
@@ -136,9 +120,9 @@ function redirect($url, $statusCode = 303) {
         <div id="footer-nav">
             <img id="footer-logo" src="./logo.png" alt="Logo">
             <ul id="footer-nav-list">
-                <li><a class="footer-nav-link" href="./index.html">Domů</a></li>
-                <li><a class="footer-nav-link" href="./stock-exchange.html">Burza</a></li>
-                <li><a class="footer-nav-link" href="./contact.html">Kontakt</a></li>
+                <li><a class="footer-nav-link" href="./index.php">Domů</a></li>
+                <li><a class="footer-nav-link" href="./stock-exchange.php">Burza</a></li>
+                <li><a class="footer-nav-link" href="./contact.php">Kontakt</a></li>
                 <li><a class="footer-nav-link" href="./my-account.php">Můj účet</a></li>
             </ul>
         </div>
