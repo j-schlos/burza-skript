@@ -10,35 +10,12 @@ $email = $password = "";
 if ($_SERVER["REQUEST_METHOD"] == "POST") {     
     
     $email = process_input($_POST["email"]);
-
     $password = process_input($_POST["password"]);
 
-    //TODO validace inputů?
-
-    //sql query select na zadaný email
-    $sql = "SELECT * FROM users WHERE email=?";
-    $stmt = $mysqli -> prepare($sql);
-    $stmt -> bind_param("s", $email);
-    $stmt -> execute();
-    $result = $stmt -> get_result();
-
-    if (mysqli_num_rows($result) === 1) {
-
-        $row = $result -> fetch_assoc();
-
-        if ($row['email'] === $email && password_verify($password, $row['password'])) {
-            $_SESSION['email'] = $row['email'];
-            //uživatel zadal jméno a heslo správně, je přihlášený
-            redirect("./my-account.php");
-        }
-    }else{
-        //špatně zadaný email?
-
-        exit();
-
+    if(!login_inputs_empty($email, $password)){
+        login($email, $password);
     }
 }
-
 ?>
 
 <!DOCTYPE html>

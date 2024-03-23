@@ -10,6 +10,7 @@ function process_input($data) {
   }
 
   function validate_name($name){
+    //validace jména
     if (!preg_match("~^[\p{Latin} ]{2,32}$~u",$name)) {
       $_SESSION["errors"] .= "Ve jméně a příjmení musí být jen písmena či mezery o délce 2-32 znaků" . "<br>";
       return false;
@@ -18,6 +19,7 @@ function process_input($data) {
   }
 
   function validate_email($email){
+    //validace emailu
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $_SESSION["errors"] .= "Zadaný email nebyl ve správném formátu" . "<br>";
         return false;
@@ -48,14 +50,6 @@ function process_input($data) {
     }
   }
 
-  function signup_inputs_empty($fname, $lname, $email, $password, $repassword){
-    if(empty($fname) || empty($lname) || empty($email) || empty($password) || empty($repassword)){
-      $_SESSION["errors"] .= "Všechna pole jsou povinná" . "<br>";
-      return true;
-    }
-    return false;
-  }
-
   function hash_password($password){
       return password_hash($password, PASSWORD_DEFAULT);
   }
@@ -64,6 +58,26 @@ function process_input($data) {
 //END - práce s inputama 
 
 //START - registrace
+
+function signup_inputs_empty($fname, $lname, $email, $password, $repassword){
+  if(empty($fname) || empty($lname) || empty($email) || empty($password) || empty($repassword)){
+    $_SESSION["errors"] .= "Všechna pole jsou povinná" . "<br>";
+    return true;
+  }
+  return false;
+}
+
+function check_existing_user($email){
+  //check jestli user už neexistuje
+  $sql = "SELECT * FROM users WHERE email=?";
+  $stmt = $mysqli -> prepare($sql);
+  $stmt -> bind_param("s", $email);
+  $stmt -> execute();
+  $result = $stmt -> get_result();
+  if(mysqli_num_rows($result) > 0){
+    $_SESSION["errors"] .= "Uživatel s tímto emailem již existuje" . "<br>";
+  }
+}
 
   function signup($fname, $lname, $email, $password, $repassword){
 
@@ -76,16 +90,6 @@ function process_input($data) {
     }
     else{
       $password = hash_password($password);
-    }
-
-    //check jestli user už neexistuje
-    $sql = "SELECT * FROM users WHERE email=?";
-    $stmt = $mysqli -> prepare($sql);
-    $stmt -> bind_param("s", $email);
-    $stmt -> execute();
-    $result = $stmt -> get_result();
-    if(mysqli_num_rows($result) > 0){
-      $_SESSION["errors"] .= "Uživatel s tímto emailem již existuje" . "<br>";
     }
 
     if(!isset($_SESSION["errors"])){
@@ -102,6 +106,52 @@ function process_input($data) {
   }
 
 //END - registrace
+
+
+
+//START - přihlášení
+
+function login_inputs_empty($email, $password){
+  if(empty($email) || empty($password)){
+    $_SESSION["errors"] .= "Všechna pole jsou povinná" . "<br>";
+    return true;
+  }
+  return false;
+}
+
+function login($email, $password){
+
+  validate_email($email);
+
+  $result = get_user_by_email($email);
+
+  if (mysqli_num_rows($result) === 1) {
+
+      $row = $result -> fetch_assoc();
+
+      if (password_verify($password, $row['password'])) {
+          //uživatel zadal jméno a heslo správně, je přihlášený
+          $_SESSION['email'] = $row['email'];
+          redirect("./my-account.php");
+      }
+      else{
+        $_SESSION["errors"] .= "Zadané heslo nebylo správné" . "<br>";
+      }
+  }else{
+    $_SESSION["errors"] .= "Uživatel s tímto emailem neexistuje" . "<br>";
+  }
+}
+
+//END - přihlášení
+
+function get_user_by_email($email){
+    //sql query select na zadaný email
+    $sql = "SELECT * FROM users WHERE email=?";
+    $stmt = $mysqli -> prepare($sql);
+    $stmt -> bind_param("s", $email);
+    $stmt -> execute();
+    return $stmt -> get_result();
+}
 
 function echo_all_errors(){
   if(isset($_SESSION["errors"])){
