@@ -1,58 +1,24 @@
 <?php
-session_start(); 
+session_start();
 
 include 'functions.php';
-include 'kitlab_db.php';
+//include 'kitlab_db.php';
 
 // define variables and set to empty values
-$error = false;
 $fname = $lname = $email = $password = "";
-$errorMsg = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {     
-    
 
     $fname = process_input($_POST['fname']);
-
     $lname = process_input($_POST['lname']);
-
     $email = process_input($_POST['email']);
-
     $password = process_input($_POST["password"]);
-
     $repassword = process_input($_POST["repassword"]);
 
-    //TODO validace inputů?
-
-    if(strcmp($password, $repassword) != 0){
-        $errorMsg = "Hesla se neshodují!";
-        $error = true;
-    }
-    else{
-        //check jestli user už neexistuje
-        $sql = "SELECT * FROM users WHERE email=?";
-        $stmt = $mysqli -> prepare($sql);
-        $stmt -> bind_param("s", $email);
-        $stmt -> execute();
-        $result = $stmt -> get_result();
-        if(mysqli_num_rows($result) > 0){
-            $errorMsg = "Uživatel s tímto emailem již existuje";
-            $error = true;
-        }
-
-        if(!$error){
-            //sql query na insert údajů uživatele
-            $sql = "INSERT INTO users (fname, lname, email, password) VALUES (?, ?, ?, ?)";
-            $stmt = $mysqli -> prepare($sql);
-            $stmt -> bind_param("ssss", $fname, $lname, $email, $password);
-            $stmt -> execute();
-
-            $_SESSION['email'] = $email;
-            redirect("./my-account.php");
-        }
+    if(!signup_inputs_empty($fname, $lname, $email, $password, $repassword)){
+        signup($fname, $lname, $email, $password, $repassword);
     }
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -107,9 +73,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="POST">
                 <h1>Registrace</h1>
             
-                        <input id="fname" name="fname" class="registration-input" type="text" placeholder="Jméno" required title="Textové pole pro Jméno">
-            
-                        <input id="lname" name="lname" class="registration-input" type="text" placeholder="Příjmení" required title="Textové pole pro Příjmení">
+                    <input id="fname" name="fname" class="registration-input" type="text" placeholder="Jméno" required title="Textové pole pro Jméno">
+        
+                    <input id="lname" name="lname" class="registration-input" type="text" placeholder="Příjmení" required title="Textové pole pro Příjmení">
             
             
                     <input id="email" name="email" class="registration-input" type="text" placeholder="Emailová adresa" required title="Textové pole pro Emailovou adresu">
@@ -118,7 +84,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             
                     <input id="repassword" name="repassword" class="registration-input" type="password" placeholder="Heslo znovu" required title="Textové pole pro Heslo znovu">
             
-                    <p class="error-msg"><?php echo $errorMsg ?></p>
+                    <p class="error-msg"><?php echo_all_errors();?></p>
 
                 <button type="submit" class="Registration-submit">Registrovat</button>
             </form>
