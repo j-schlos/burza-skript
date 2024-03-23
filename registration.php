@@ -10,8 +10,11 @@ $fname = $lname = $email = $password = "";
 if ($_SERVER["REQUEST_METHOD"] == "POST") {     
 
     $fname = process_input($_POST['fname']);
+    $_SESSION['inputFName'] = $fname;
     $lname = process_input($_POST['lname']);
+    $_SESSION['inputLName'] = $lname;
     $email = process_input($_POST['email']);
+    $_SESSION['inputEmail'] = $email;
     $password = process_input($_POST["password"]);
     $repassword = process_input($_POST["repassword"]);
 
@@ -73,12 +76,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="POST">
                 <h1>Registrace</h1>
             
-                    <input id="fname" name="fname" class="registration-input" type="text" placeholder="Jméno" required title="Textové pole pro Jméno">
+                    <input id="fname" name="fname" class="registration-input" type="text" placeholder="Jméno" value="<?php if(isset($_SESSION["inputFName"])) echo $_SESSION["inputFName"]?>" required title="Textové pole pro Jméno">
         
-                    <input id="lname" name="lname" class="registration-input" type="text" placeholder="Příjmení" required title="Textové pole pro Příjmení">
+                    <input id="lname" name="lname" class="registration-input" type="text" placeholder="Příjmení" value="<?php if(isset($_SESSION["inputLName"])) echo $_SESSION["inputLName"]?>" required title="Textové pole pro Příjmení">
             
             
-                    <input id="email" name="email" class="registration-input" type="text" placeholder="Emailová adresa" required title="Textové pole pro Emailovou adresu">
+                    <input id="email" name="email" class="registration-input" type="text" placeholder="Emailová adresa" value="<?php if(isset($_SESSION["inputEmail"])) echo $_SESSION["inputEmail"]?>" required title="Textové pole pro Emailovou adresu">
             
                     <input id="password" name="password" class="registration-input" type="password" placeholder="Heslo" required title="Textové pole pro Heslo">
             

@@ -1,5 +1,10 @@
 <?php
+error_reporting(E_ALL);
+ini_set("display_errors", 1);
+
 include 'kitlab_db.php';
+
+$_SESSION["errors"] = "";
 //START - práce s inputama 
 
 function process_input($data) {
@@ -70,7 +75,7 @@ function signup_inputs_empty($fname, $lname, $email, $password, $repassword){
 function check_existing_user($email){
   //check jestli user už neexistuje
   $sql = "SELECT * FROM users WHERE email=?";
-  $stmt = $mysqli -> prepare($sql);
+  $stmt = $GLOBALS['mysqli'] -> prepare($sql);
   $stmt -> bind_param("s", $email);
   $stmt -> execute();
   $result = $stmt -> get_result();
@@ -91,11 +96,13 @@ function check_existing_user($email){
     else{
       $password = hash_password($password);
     }
+    
+    check_existing_user($email);
 
-    if(!isset($_SESSION["errors"])){
+    if(empty($_SESSION["errors"])){
         //sql query na insert údajů uživatele
         $sql = "INSERT INTO users (fname, lname, email, password) VALUES (?, ?, ?, ?)";
-        $stmt = $mysqli -> prepare($sql);
+        $stmt = $GLOBALS['mysqli'] -> prepare($sql);
         $stmt -> bind_param("ssss", $fname, $lname, $email, $password);
         $stmt -> execute();
 
@@ -123,23 +130,25 @@ function login($email, $password){
 
   validate_email($email);
 
-  $result = get_user_by_email($email);
+  if(empty($_SESSION['errors'])){
+    $result = get_user_by_email($email);
 
-  if (mysqli_num_rows($result) === 1) {
-
-      $row = $result -> fetch_assoc();
-
-      if (password_verify($password, $row['password'])) {
-          //uživatel zadal jméno a heslo správně, je přihlášený
-          $_SESSION['email'] = $row['email'];
-          redirect("./my-account.php");
-      }
-      else{
-        $_SESSION["errors"] .= "Zadané heslo nebylo správné" . "<br>";
-      }
-  }else{
-    $_SESSION["errors"] .= "Uživatel s tímto emailem neexistuje" . "<br>";
-  }
+    if (mysqli_num_rows($result) === 1) {
+  
+        $row = $result -> fetch_assoc();
+  
+        if (password_verify($password, $row['password'])) {
+            //uživatel zadal jméno a heslo správně, je přihlášený
+            $_SESSION['email'] = $row['email'];
+            redirect("./my-account.php");
+        }
+        else{
+          $_SESSION["errors"] .= "Zadané heslo nebylo správné" . "<br>";
+        }
+    }else{
+      $_SESSION["errors"] .= "Uživatel s tímto emailem neexistuje" . "<br>";
+    }
+  }  
 }
 
 //END - přihlášení
@@ -147,14 +156,14 @@ function login($email, $password){
 function get_user_by_email($email){
     //sql query select na zadaný email
     $sql = "SELECT * FROM users WHERE email=?";
-    $stmt = $mysqli -> prepare($sql);
+    $stmt = $GLOBALS['mysqli'] -> prepare($sql);
     $stmt -> bind_param("s", $email);
     $stmt -> execute();
     return $stmt -> get_result();
 }
 
 function echo_all_errors(){
-  if(isset($_SESSION["errors"])){
+  if(!empty($_SESSION["errors"])){
       echo "Během registrace nastala chyba:" . "<br>";
       echo $_SESSION["errors"];
       unset($_SESSION["errors"]);
@@ -170,5 +179,13 @@ function redirect($url, $statusCode = 303) {
 function show_alert_box($message) {
     echo "<script>alert('$message');</script>"; 
   }
+
+  function debug_to_console($data) {
+    $output = $data;
+    if (is_array($output))
+        $output = implode(',', $output);
+
+    echo "<script>console.log('Debug Objects: " . $output . "' );</script>";
+}
 
 ?>
