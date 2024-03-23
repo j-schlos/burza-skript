@@ -96,10 +96,10 @@ function check_existing_user($email){
     else{
       $password = hash_password($password);
     }
-
+    
     check_existing_user($email);
 
-    if(!isset($_SESSION["errors"])){
+    if(empty($_SESSION["errors"])){
         //sql query na insert údajů uživatele
         $sql = "INSERT INTO users (fname, lname, email, password) VALUES (?, ?, ?, ?)";
         $stmt = $GLOBALS['mysqli'] -> prepare($sql);
@@ -130,23 +130,25 @@ function login($email, $password){
 
   validate_email($email);
 
-  $result = get_user_by_email($email);
+  if(empty($_SESSION['errors'])){
+    $result = get_user_by_email($email);
 
-  if (mysqli_num_rows($result) === 1) {
-
-      $row = $result -> fetch_assoc();
-
-      if (password_verify($password, $row['password'])) {
-          //uživatel zadal jméno a heslo správně, je přihlášený
-          $_SESSION['email'] = $row['email'];
-          redirect("./my-account.php");
-      }
-      else{
-        $_SESSION["errors"] .= "Zadané heslo nebylo správné" . "<br>";
-      }
-  }else{
-    $_SESSION["errors"] .= "Uživatel s tímto emailem neexistuje" . "<br>";
-  }
+    if (mysqli_num_rows($result) === 1) {
+  
+        $row = $result -> fetch_assoc();
+  
+        if (password_verify($password, $row['password'])) {
+            //uživatel zadal jméno a heslo správně, je přihlášený
+            $_SESSION['email'] = $row['email'];
+            redirect("./my-account.php");
+        }
+        else{
+          $_SESSION["errors"] .= "Zadané heslo nebylo správné" . "<br>";
+        }
+    }else{
+      $_SESSION["errors"] .= "Uživatel s tímto emailem neexistuje" . "<br>";
+    }
+  }  
 }
 
 //END - přihlášení
@@ -177,5 +179,13 @@ function redirect($url, $statusCode = 303) {
 function show_alert_box($message) {
     echo "<script>alert('$message');</script>"; 
   }
+
+  function debug_to_console($data) {
+    $output = $data;
+    if (is_array($output))
+        $output = implode(',', $output);
+
+    echo "<script>console.log('Debug Objects: " . $output . "' );</script>";
+}
 
 ?>

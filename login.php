@@ -2,7 +2,7 @@
 session_start(); 
 
 include 'functions.php';
-include 'kitlab_db.php';
+//include 'kitlab_db.php';
 
 // define variables and set to empty values
 $email = $password = "";
@@ -80,9 +80,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         </label>
                         <a href="./forgot-password.php">Zapomněli jste heslo?</a>
                     </div>
+
+                    <p class="error-msg"><?php echo_all_errors();?></p>
                     
                     <button type="submit" class="login-submit">Přihlásit </button>
-                    
                         
                     <p><a href="./registration.php">Nemáte účet a chcete se registrovat?</a></p>
                 </div>
