@@ -810,13 +810,18 @@ ul {
     flex-direction: column;
     align-items: center;
     max-width: 60%;
+    width: 60%;
     margin: 3rem auto;
 }
 
 .add-advertisement-wrap{
+    width: 100%;
+}
+
+.add-advertisement-wrap form{
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
 }
 
 .add-advertisement-form{
@@ -831,10 +836,6 @@ ul {
 
 .add-advertisement-form h1{
     margin-top: 0;
-}
-
-.add-advertisement-form form{
-    max-width: 100%;
 }
 
 .add-advertisement textarea{
@@ -857,11 +858,6 @@ ul {
 .add-advertisement-image input{
     align-self: center;
     margin-top: 2rem;
-}
-
-.add-advertisement-btn{
-    align-self: center;
-    margin-top: 10vh;
 }
 
 /* ################# Detail produktu ######################## */
@@ -1202,6 +1198,12 @@ ul {
     justify-content: center;
     align-items: center;
     margin-top: 8px;
+}
+
+#add-advertisement-btn{
+    font-size: 1em;
+    padding: 0.6em;
+    align-self: flex-end;
 }
 
 #reset-password{
