@@ -26,7 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         $row = $result -> fetch_assoc();
 
-        if ($row['email'] === $email && $row['password'] === $password) {
+        if ($row['email'] === $email && password_verify($password, $row['password'])) {
             $_SESSION['email'] = $row['email'];
             //uživatel zadal jméno a heslo správně, je přihlášený
             redirect("./my-account.php");
