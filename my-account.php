@@ -27,11 +27,16 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    if (isset($_POST['btnPassChange'])) {
-        redirect("./password-change.php");
-    }
-    else{
-        //změna údajů
+    $fname = $_POST['fname'];
+    $lname = $_POST['lname'];
+    $email = $_POST['email'];
+    $phone = $_POST['phone'];
+    $street = $_POST['street'];
+    $city = $_POST['city'];
+    $zipcode = $_POST['zipcode'];
+
+    if(!account_data_change_inputs_empty($fname, $lname, $email)){
+        change_account_data($fname, $lname, $email, $phone, $street, $city, $zipcode);
     }
 
 }
@@ -81,22 +86,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </header>
     <div class="Signup-container">
         <div class="UserInfo-container">
-            <form action>
+            <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="POST">
                 <div class="NameContainer-wrapper">
                     <img class="userImg" src="avatar.png" alt="">
                     <div class="NameContainer">
                         <h2>Osobní údaje</h2>
-                        <input id="Acc-Name-btn" class="Account-btns" type="text" placeholder="Jméno" value="<?php echo $fname ?>" required title="Textové pole pro Jméno">
-                        <input id="Acc-Surname-btn" class="Account-btns" type="text" placeholder="Příjmení" value="<?php echo $lname ?>" required title="Textové pole pro Příjmení">
+                        <input id="Acc-Name-btn" name="fname" class="Account-btns" type="text" placeholder="Jméno" value="<?php echo $fname ?>" required title="Textové pole pro Jméno">
+                        <input id="Acc-Surname-btn" name="lname" class="Account-btns" type="text" placeholder="Příjmení" value="<?php echo $lname ?>" required title="Textové pole pro Příjmení">
                     </div>
                 </div>
         
-                    <input id="Acc-Email-btn" class="Account-btns" type="text" placeholder="Emailová adresa" value="<?php echo $email ?>" required title="Textové pole pro "Emailovou adresu>
-                    <input id="Acc-Phone-btn" class="Account-btns" type="text" placeholder="Telefon" value="<?php echo $phone ?>" required title="Textové pole pro telefonní číslo">
-                    <input id="Acc-Address-btn" class="Account-btns" type="text" placeholder="Adresa" value="<?php echo $street ?>" required title="Textové pole pro Ulici">
-                    <input id="Acc-City-btn" class="Account-btns" type="text" placeholder="Město" value="<?php echo $city ?>" required title="Textové pole pro Město">
-                    <input id="Acc-PSC-btn" class="Account-btns" type="text" placeholder="PSČ" value="<?php echo $zipcode ?>" required title="Textové pole pro PSČ">
-        
+                    <input id="Acc-Email-btn" name="email" class="Account-btns" type="text" placeholder="Emailová adresa" value="<?php echo $email ?>" required title="Textové pole pro "Emailovou adresu>
+                    <input id="Acc-Phone-btn" name="phone" class="Account-btns" type="text" placeholder="Telefon" value="<?php echo $phone ?>" title="Textové pole pro telefonní číslo">
+                    <input id="Acc-Address-btn" name="street" class="Account-btns" type="text" placeholder="Adresa" value="<?php echo $street ?>" title="Textové pole pro Ulici">
+                    <input id="Acc-City-btn" name="city" class="Account-btns" type="text" placeholder="Město" value="<?php echo $city ?>" title="Textové pole pro Město">
+                    <input id="Acc-PSC-btn" name="zipcode" class="Account-btns" type="text" placeholder="PSČ" value="<?php echo $zipcode ?>" title="Textové pole pro PSČ">
+                    <p class="error-msg"><?php echo_all_errors();?></p>
                 <div class="Accout-change-buttons">
                     <button type="submit"  id="change-submit">Upravit</button>
                     <button type="button"  id="pass-change-submit" onClick="Javascript:window.location.href = './password-change.php';">Změnit heslo</button>
