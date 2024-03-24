@@ -1164,7 +1164,7 @@ ul {
 
 /* ########### tlačítka ############### */
 
-#contact-btn, #add-advertisement-btn, .view-product, .Registration-submit, .login-submit, #reset-password, #pass-change-submit, #change-submit{
+#contact-btn, #add-advertisement-btn, .view-product, .Registration-submit, .login-submit, #reset-password, #pass-change-submit, #change-submit, #change-password-btn{
     cursor: pointer;
     background: var(--header-nav-blue);
     border: none;
@@ -1173,7 +1173,7 @@ ul {
     transition: background 0.2s ease-in;
 }
 
-#contact-btn:hover, #insert-images-btn:hover, #add-advertisement-btn:hover, .view-product:hover, .Registration-submit:hover, .login-submit:hover, #reset-password:hover, #pass-change-submit:hover, #change-submit:hover{
+#contact-btn:hover, #insert-images-btn:hover, #add-advertisement-btn:hover, .view-product:hover, .Registration-submit:hover, .login-submit:hover, #reset-password:hover, #pass-change-submit:hover, #change-submit:hover, #change-password-btn:hover{
     background: var(--header-nav-blue-hover);
 }
 
@@ -1218,6 +1218,29 @@ ul {
     font-size:16px;
     color: var(--white);
     font-weight:600;
+}
+
+.change-password{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.change-password-wrap form{
+    width: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.change-password-wrap input{
+    margin-bottom: 0.6em;
+}
+
+#change-password-btn{
+    padding: 0.6em;
+    font-size: 0.9em;
 }
 
 .error-msg{
@@ -1497,6 +1520,14 @@ ul {
 
     .home-page-product-card{
         height: 460px;
+    }
+
+    .change-password-wrap{
+        width: 80%;
+    }
+
+    .change-password-wrap form{
+        width: 100%;
     }
 }
 

@@ -84,6 +84,14 @@ function check_existing_user($email){
   }
 }
 
+function add_new_user_to_database($fname, $lname, $email, $password){
+    //sql query na insert údajů uživatele
+    $sql = "INSERT INTO users (fname, lname, email, password) VALUES (?, ?, ?, ?)";
+    $stmt = $GLOBALS['mysqli'] -> prepare($sql);
+    $stmt -> bind_param("ssss", $fname, $lname, $email, $password);
+    $stmt -> execute();
+}
+
   function signup($fname, $lname, $email, $password, $repassword){
 
     validate_name($fname);
@@ -100,11 +108,7 @@ function check_existing_user($email){
     check_existing_user($email);
 
     if(empty($_SESSION["errors"])){
-        //sql query na insert údajů uživatele
-        $sql = "INSERT INTO users (fname, lname, email, password) VALUES (?, ?, ?, ?)";
-        $stmt = $GLOBALS['mysqli'] -> prepare($sql);
-        $stmt -> bind_param("ssss", $fname, $lname, $email, $password);
-        $stmt -> execute();
+        add_new_user_to_database($fname, $lname, $email, $password);
 
         unset($_SESSION["errors"]);
         $_SESSION['email'] = $email;
@@ -153,6 +157,19 @@ function login($email, $password){
 
 //END - přihlášení
 
+//START - změna hesla
+
+function password_change($oldPassword, $newPassword, $newRepassword){
+  
+  if (password_verify($oldPassword, $row['password'])) {
+    hash_password($password);
+    redirect("./my-account.php");
+  }
+  return false;
+}
+
+//END - změna hesla
+
 function get_user_by_email($email){
     //sql query select na zadaný email
     $sql = "SELECT * FROM users WHERE email=?";
@@ -168,6 +185,12 @@ function echo_all_errors(){
       echo $_SESSION["errors"];
       unset($_SESSION["errors"]);
   }
+}
+
+function redirect_user_if_not_logged_in(){
+    if(empty($_SESSION['email'] || !isset($_SESSION['email']))){
+       redirect("./login.php");
+    }
 }
 
 
