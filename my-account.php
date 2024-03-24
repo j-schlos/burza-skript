@@ -2,7 +2,7 @@
 session_start(); 
 
 include 'functions.php';
-include 'kitlab_db.php';
+//include 'kitlab_db.php';
 
 // define variables and set to empty values
 $fname = $lname = $email = $phone = $street = $city = $zipcode = "";
