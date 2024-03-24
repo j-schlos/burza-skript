@@ -1,4 +1,5 @@
 <?php
+session_start(); 
 error_reporting(E_ALL);
 ini_set("display_errors", 1);
 
@@ -184,8 +185,12 @@ function password_change($email, $oldPassword, $newPassword, $newRepassword){
     $_SESSION["errors"] .= "Zadané staré heslo nebylo správné" . "<br>";
     return false;
   }
+  if(strcmp($oldPassword, $newPassword) == 0){
+    $_SESSION["errors"] .= "Zadané staré a nové heslo se shodují" . "<br>";
+    return false;
+  }
   if(strcmp($newPassword, $newRepassword) != 0){
-    $_SESSION["errors"] .= "Zadaná hesla se neshodují" . "<br>";
+    $_SESSION["errors"] .= "Zadané nové heslo a znovu zadané nové heslo se neshodují" . "<br>";
     return false;
   }
 
@@ -214,7 +219,7 @@ function echo_all_errors(){
 }
 
 function redirect_user_if_not_logged_in(){
-    if(empty($_SESSION['email'] || !isset($_SESSION['email']))){
+   if(!isset($_SESSION["email"]) || empty($_SESSION["email"])){
        redirect("./login.php");
     }
 }
