@@ -32,21 +32,21 @@ function process_input($data) {
       return true;
   }
 
-  function validate_password($email){
+  function validate_password($password){
     // Validace hesla
     $regex = '/^(?=.[A-Z])(?=.[a-z])(?=.\d)[A-Za-z\d]{8,}$/';
-    if (!preg_match($regex, $this->password)) {
+    if (!preg_match($regex, $password)) {
         $_SESSION["errors"] .= "<b>Heslo nesplňuje požadavky.</b> <br>";
-        if (!preg_match('/^(?=.[A-Z])/', $this->password)) {
+        if (!preg_match('/^(?=.[A-Z])/', $password)) {
             $_SESSION["errors"] .= " - Chybí alespoň jedno velké písmeno. <br>";
         }
-        else if (!preg_match('/^(?=.[a-z])/', $this->password)) {
+        else if (!preg_match('/^(?=.[a-z])/', $password)) {
             $_SESSION["errors"] .= " - Chybí alespoň jedno malé písmeno. <br>";
         }
-        else if (!preg_match('/^(?=.\d)/', $this->password)) {
+        else if (!preg_match('/^(?=.\d)/', $password)) {
             $_SESSION["errors"] .= " - Chybí alespoň jedno číslo. <br>";
         }
-        else if (!preg_match('/[A-Za-z\d]{8,}$/', $this->password)) {
+        else if (!preg_match('/[A-Za-z\d]{8,}$/', $password)) {
             $_SESSION["errors"] .= " - Heslo musí mít alespoň 8 znaků. <br>";
         }
         return true;
@@ -84,6 +84,14 @@ function check_existing_user($email){
   }
 }
 
+function add_new_user_to_database($fname, $lname, $email, $password){
+    //sql query na insert údajů uživatele
+    $sql = "INSERT INTO users (fname, lname, email, password) VALUES (?, ?, ?, ?)";
+    $stmt = $GLOBALS['mysqli'] -> prepare($sql);
+    $stmt -> bind_param("ssss", $fname, $lname, $email, $password);
+    $stmt -> execute();
+}
+
   function signup($fname, $lname, $email, $password, $repassword){
 
     validate_name($fname);
@@ -100,11 +108,7 @@ function check_existing_user($email){
     check_existing_user($email);
 
     if(empty($_SESSION["errors"])){
-        //sql query na insert údajů uživatele
-        $sql = "INSERT INTO users (fname, lname, email, password) VALUES (?, ?, ?, ?)";
-        $stmt = $GLOBALS['mysqli'] -> prepare($sql);
-        $stmt -> bind_param("ssss", $fname, $lname, $email, $password);
-        $stmt -> execute();
+        add_new_user_to_database($fname, $lname, $email, $password);
 
         unset($_SESSION["errors"]);
         $_SESSION['email'] = $email;
@@ -153,6 +157,43 @@ function login($email, $password){
 
 //END - přihlášení
 
+//START - změna hesla
+
+function password_change_inputs_empty($oldPassword, $newPassword, $newRepassword){
+  if(empty($oldPassword) || empty($newPassword) || empty($newRepassword)){
+    $_SESSION["errors"] .= "Všechna pole jsou povinná" . "<br>";
+    return true;
+  }
+  return false;
+}
+
+function update_users_password($email, $password){
+  //sql query select na zadaný email
+  $sql = "UPDATE users SET password=? WHERE email=?";
+  $stmt = $GLOBALS['mysqli'] -> prepare($sql);
+  $stmt -> bind_param("ss", $password, $email);
+  $stmt -> execute();
+}
+function password_change($email, $oldPassword, $newPassword, $newRepassword){
+
+  $result = get_user_by_email($email);
+
+  if (!password_verify($oldPassword, $row['password'])) {
+    $_SESSION["errors"] .= "Zadané staré heslo nebylo správné" . "<br>";
+    return false;
+  }
+  if(strcmp($newPassword, $newRepassword) != 0){
+    $_SESSION["errors"] .= "Zadaná hesla se neshodují" . "<br>";
+    return false;
+  }
+
+  $hashed_password = hash_password($newPassword);
+  update_users_password($email, $hashed_password);
+  return true;
+}
+
+//END - změna hesla
+
 function get_user_by_email($email){
     //sql query select na zadaný email
     $sql = "SELECT * FROM users WHERE email=?";
@@ -164,10 +205,16 @@ function get_user_by_email($email){
 
 function echo_all_errors(){
   if(!empty($_SESSION["errors"])){
-      echo "Během registrace nastala chyba:" . "<br>";
+      echo "Nastala chyba:" . "<br>";
       echo $_SESSION["errors"];
       unset($_SESSION["errors"]);
   }
+}
+
+function redirect_user_if_not_logged_in(){
+    if(empty($_SESSION['email'] || !isset($_SESSION['email']))){
+       redirect("./login.php");
+    }
 }
 
 
