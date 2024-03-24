@@ -98,8 +98,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <input id="Acc-PSC-btn" class="Account-btns" type="text" placeholder="PSČ" value="<?php echo $zipcode ?>" required title="Textové pole pro PSČ">
         
                 <div class="Accout-change-buttons">
-                    <button type="submit" name="btnAccChange" id="change-submit">Upravit</button>
-                    <button type="submit" name="btnPassChange" id="pass-change-submit">Změnit heslo</button>
+                    <button type="submit"  id="change-submit">Upravit</button>
+                    <a type="submit" href="./password-change.php"  id="pass-change-submit">Změnit heslo</a>
                 </div>
             </form>
         </div>
