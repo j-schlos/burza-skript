@@ -99,7 +99,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         
                 <div class="Accout-change-buttons">
                     <button type="submit"  id="change-submit">Upravit</button>
-                    <a type="submit" href="./password-change.php"  id="pass-change-submit">Změnit heslo</a>
+                    <button type="button"  id="pass-change-submit" onClick="Javascript:window.location.href = './password-change.php';">Změnit heslo</button>
                 </div>
             </form>
         </div>
