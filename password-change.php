@@ -1,28 +1,16 @@
 <?php
 session_start();
-/*
+
 include 'functions.php';
 include 'kitlab_db.php';
 
 // define variables and set to empty values
-$error = false;
-$userId = $sqlPhone = $sqlEmail = "";
-$title = $phone = $email = $price = $description = "";
-$errorMsg = "";
+$oldPassword = $newPassword = $newRepassword = "";
 
 if($_SERVER["REQUEST_METHOD"] == "GET"){
 
     redirect_user_if_not_logged_in();
 
-    $_SESSION['email'];
-
-    if (mysqli_num_rows($result) === 1) {
-        //natáhnutí dat z DB
-        $row = $result -> fetch_assoc();
-        $GLOBALS['userId'] = $row['id'];
-        $GLOBALS['sqlPhone'] = $row['phone'];
-        $GLOBALS['sqlEmail'] = $row['email'];
-    }
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {    
@@ -33,11 +21,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $newRepassword = process_input($_POST['newRepassword']);
 
-    if(password_change($_SESSION['email'], $oldPassword, $newPassword, $newRepassword)){
 
+    if(!password_change_inputs_empty($oldPassword, $newPassword, $newRepassword) && password_change($_SESSION['email'], $oldPassword, $newPassword, $newRepassword)){
+        redirect("./my-account.php");
     }
-
-}*/
+}
 ?>
 
 <!DOCTYPE html>
@@ -85,9 +73,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <h1>Změna hesla</h1>
         <div class="change-password-wrap">
             <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="POST">
+                <input type="text" class="login-input" name="email" class="text-input add-advertisement-form-input" placeholder="Email" value="<?php echo $_SESSION['email'];?>" disabled="true" title="Textové pole pro staré heslo">
                 <input type="password" class="login-input" name="oldPassword" class="text-input add-advertisement-form-input" placeholder="Staré heslo" title="Textové pole pro staré heslo">
                 <input type="password" class="login-input" name="newPassword" class="text-input add-advertisement-form-input" placeholder="Nové heslo"  title="Textové pole pro nové heslo">
                 <input type="password" class="login-input" name="newRepassword" class="text-input add-advertisement-form-input" placeholder="Nové heslo znovu" title="Textové pole pro nové heslo znovu">
+                <p class="error-msg"><?php echo_all_errors();?></p>
                 <input type="button" value="Změnit heslo" id="change-password-btn">
             </form>
         </div>

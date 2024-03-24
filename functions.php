@@ -32,21 +32,21 @@ function process_input($data) {
       return true;
   }
 
-  function validate_password($email){
+  function validate_password($password){
     // Validace hesla
     $regex = '/^(?=.[A-Z])(?=.[a-z])(?=.\d)[A-Za-z\d]{8,}$/';
-    if (!preg_match($regex, $this->password)) {
+    if (!preg_match($regex, $password)) {
         $_SESSION["errors"] .= "<b>Heslo nesplňuje požadavky.</b> <br>";
-        if (!preg_match('/^(?=.[A-Z])/', $this->password)) {
+        if (!preg_match('/^(?=.[A-Z])/', $password)) {
             $_SESSION["errors"] .= " - Chybí alespoň jedno velké písmeno. <br>";
         }
-        else if (!preg_match('/^(?=.[a-z])/', $this->password)) {
+        else if (!preg_match('/^(?=.[a-z])/', $password)) {
             $_SESSION["errors"] .= " - Chybí alespoň jedno malé písmeno. <br>";
         }
-        else if (!preg_match('/^(?=.\d)/', $this->password)) {
+        else if (!preg_match('/^(?=.\d)/', $password)) {
             $_SESSION["errors"] .= " - Chybí alespoň jedno číslo. <br>";
         }
-        else if (!preg_match('/[A-Za-z\d]{8,}$/', $this->password)) {
+        else if (!preg_match('/[A-Za-z\d]{8,}$/', $password)) {
             $_SESSION["errors"] .= " - Heslo musí mít alespoň 8 znaků. <br>";
         }
         return true;
@@ -159,13 +159,37 @@ function login($email, $password){
 
 //START - změna hesla
 
-function password_change($oldPassword, $newPassword, $newRepassword){
-  
-  if (password_verify($oldPassword, $row['password'])) {
-    hash_password($password);
-    redirect("./my-account.php");
+function password_change_inputs_empty($oldPassword, $newPassword, $newRepassword){
+  if(empty($oldPassword) || empty($newPassword) || empty($newRepassword)){
+    $_SESSION["errors"] .= "Všechna pole jsou povinná" . "<br>";
+    return true;
   }
   return false;
+}
+
+function update_users_password($email, $password){
+  //sql query select na zadaný email
+  $sql = "UPDATE users SET password=? WHERE email=?";
+  $stmt = $GLOBALS['mysqli'] -> prepare($sql);
+  $stmt -> bind_param("ss", $password, $email);
+  $stmt -> execute();
+}
+function password_change($email, $oldPassword, $newPassword, $newRepassword){
+
+  $result = get_user_by_email($email);
+
+  if (!password_verify($oldPassword, $row['password'])) {
+    $_SESSION["errors"] .= "Zadané staré heslo nebylo správné" . "<br>";
+    return false;
+  }
+  if(strcmp($newPassword, $newRepassword) != 0){
+    $_SESSION["errors"] .= "Zadaná hesla se neshodují" . "<br>";
+    return false;
+  }
+
+  $hashed_password = hash_password($newPassword);
+  update_users_password($email, $hashed_password);
+  return true;
 }
 
 //END - změna hesla
@@ -181,7 +205,7 @@ function get_user_by_email($email){
 
 function echo_all_errors(){
   if(!empty($_SESSION["errors"])){
-      echo "Během registrace nastala chyba:" . "<br>";
+      echo "Nastala chyba:" . "<br>";
       echo $_SESSION["errors"];
       unset($_SESSION["errors"]);
   }
