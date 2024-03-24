@@ -78,7 +78,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <input type="password" class="login-input" name="newPassword" class="text-input add-advertisement-form-input" placeholder="Nové heslo"  title="Textové pole pro nové heslo">
                 <input type="password" class="login-input" name="newRepassword" class="text-input add-advertisement-form-input" placeholder="Nové heslo znovu" title="Textové pole pro nové heslo znovu">
                 <p class="error-msg"><?php echo_all_errors();?></p>
-                <input type="button" value="Změnit heslo" id="change-password-btn">
+                <input type="submit" value="Změnit heslo" id="change-password-btn">
             </form>
         </div>
     </div>

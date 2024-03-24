@@ -178,6 +178,8 @@ function password_change($email, $oldPassword, $newPassword, $newRepassword){
 
   $result = get_user_by_email($email);
 
+  $row = $result -> fetch_assoc();
+
   if (!password_verify($oldPassword, $row['password'])) {
     $_SESSION["errors"] .= "Zadané staré heslo nebylo správné" . "<br>";
     return false;
