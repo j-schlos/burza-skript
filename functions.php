@@ -16,9 +16,25 @@ function process_input($data) {
   }
 
   function validate_name($name){
+     if (!preg_match("/^[\p{Latin} ]{2,32}$/u",$name)) {
+      return false;
+     }
+     return true;
+  }
+
+  function validate_first_name($fname){
     //validace jména
-    if (!preg_match("~^[\p{Latin} ]{2,32}$~u",$name)) {
-      $_SESSION["errors"] .= "Ve jméně a příjmení musí být jen písmena či mezery o délce 2-32 znaků" . "<br>";
+    if (!validate_name($fname)) {
+      $_SESSION["errors"] .= "Ve jméně musí být jen písmena či mezery o délce 2-32 znaků" . "<br>";
+      return false;
+    }
+    return true;
+  }
+
+  function validate_last_name($lname){
+    //validace příjmení
+    if (!validate_name($lname)) {
+      $_SESSION["errors"] .= "V příjmení musí být jen písmena či mezery o délce 2-32 znaků" . "<br>";
       return false;
     }
     return true;
@@ -30,6 +46,55 @@ function process_input($data) {
         $_SESSION["errors"] .= "Zadaný email nebyl ve správném formátu" . "<br>";
         return false;
       }
+      return true;
+  }
+  
+  function validate_phone($phone){
+    if (!preg_match("/^[\d]{9}$/",$phone)) {
+      $_SESSION["errors"] .= "Zadaný telefon nebyl ve správném formátu, musí se skládat z přesně 9 číslic." . "<br>";
+        return false;
+      }
+      return true;
+  }
+
+  function validate_street($street){
+    if(empty($street)){
+      return true;
+    }
+    if(strlen($street) > 64){
+      $_SESSION["errors"] .= "Adresa musí mít maximálně 64 znaků." . "<br>";
+      return false;
+    }
+    if (!preg_match("/^(\p{Latin}*\s{0,1})*\s\d+$/u",$street)) {
+      $_SESSION["errors"] .= "Adresa musí být složena ze slov zakončených číslicí (Například: \"Vodičkova 35\")" . "<br>";
+      return false;
+    }
+      return true;
+  }
+
+  function validate_city($city){
+    if(empty($city)){
+      return true;
+    }
+    if(strlen($city) > 64){
+      $_SESSION["errors"] .= "Město musí mít maximálně 64 znaků." . "<br>";
+      return false;
+    }
+    if (!preg_match("/^([\p{Latin}-]*\s{0,1})*\d*$/u",$city)) {
+      $_SESSION["errors"] .= "Město musí být složeno pouze ze slov(Například: \"Velké Meziříčí\")" . "<br>";
+      return false;
+    }
+      return true;
+  }
+
+  function validate_zipcode($zipcode){
+    if(empty($zipcode)){
+      return true;
+    }
+    if (!preg_match("/^\d{5}$/",$zipcode)) {
+      $_SESSION["errors"] .= "PSČ musí být zadáno jako 5 číslic bez mezery(Například: \"16500\")" . "<br>";
+      return false;
+    }
       return true;
   }
 
@@ -95,8 +160,8 @@ function add_new_user_to_database($fname, $lname, $email, $password){
 
   function signup($fname, $lname, $email, $password, $repassword){
 
-    validate_name($fname);
-    validate_name($lname);
+    validate_first_name($fname);
+    validate_last_name($lname);
     validate_email($email);
 
     if(strcmp($password, $repassword) != 0){
@@ -201,6 +266,44 @@ function password_change($email, $oldPassword, $newPassword, $newRepassword){
 
 //END - změna hesla
 
+//START - změna osobních údajů
+
+function account_data_change_inputs_empty($fname, $lname, $email){
+  if(empty($fname) || empty($lname) || empty($email)){
+    $_SESSION["errors"] .= "Pole Jméno, Příjmení a Emailová adresa jsou povinná" . "<br>";
+    return true;
+  }
+  return false;
+}
+
+function update_users_data($id, $fname, $lname, $email, $phone, $street, $city, $zipcode){
+  //sql query select na zadaný email
+  $sql = "UPDATE users SET fname=?, lname=?, email=?, phone=?, street=?, city=?, zipcode=? WHERE id=?";
+  $stmt = $GLOBALS['mysqli'] -> prepare($sql);
+  $stmt -> bind_param("sssssssi", $fname, $lname, $email, $phone, $street, $city, $zipcode, $id);
+  $stmt -> execute();
+}
+
+function change_account_data($fname, $lname, $email, $phone, $street, $city, $zipcode){
+
+  $user_id = get_user_id_by_email($email);
+
+  validate_first_name($fname);
+  validate_last_name($lname);
+  validate_email($email);
+  validate_phone($phone);
+  validate_street($street);
+  validate_city($city);
+  validate_zipcode($zipcode);
+
+  if(empty($_SESSION['errors'])){
+    update_users_data($user_id, $fname, $lname, $email, $phone, $street, $city, $zipcode);
+  }
+
+}
+
+//END - změna osobních údajů
+
 function get_user_by_email($email){
     //sql query select na zadaný email
     $sql = "SELECT * FROM users WHERE email=?";
@@ -208,6 +311,17 @@ function get_user_by_email($email){
     $stmt -> bind_param("s", $email);
     $stmt -> execute();
     return $stmt -> get_result();
+}
+
+function get_user_id_by_email($email){
+  //sql query select id podle zadan0ho emailu
+  $sql = "SELECT id FROM users WHERE email=?";
+  $stmt = $GLOBALS['mysqli'] -> prepare($sql);
+  $stmt -> bind_param("s", $email);
+  $stmt -> execute();
+  $result = $stmt -> get_result();
+  $row = $result -> fetch_assoc();
+  return $row['id'];
 }
 
 function echo_all_errors(){
