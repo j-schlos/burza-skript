@@ -356,4 +356,37 @@ function show_alert_box($message) {
     echo "<script>console.log('Debug Objects: " . $output . "' );</script>";
 }
 
+function get_product_by_id($id){
+  //sql query select na zadaný id
+  $sql = "SELECT * FROM advertisements WHERE id=?";
+  $stmt = $GLOBALS['mysqli'] -> prepare($sql);
+  $stmt -> bind_param("i", $id);
+  $stmt -> execute();
+  return $stmt -> get_result();
+}
+
+function get_products($id){
+  $sql = "SELECT * FROM advertisements WHERE field_of_study_id=?";
+  $stmt = $GLOBALS['mysqli'] -> prepare($sql);
+  $stmt -> bind_param("i", $id);
+  $stmt -> execute();
+  return $stmt -> get_result();
+}
+
+function get_faculty($id){
+  $sql = "SELECT * FROM faculty WHERE id=?";
+  $stmt = $GLOBALS['mysqli'] -> prepare($sql);
+  $stmt -> bind_param("i", $id);
+  $stmt -> execute();
+  return $stmt -> get_result();
+}
+
+function get_field_of_study($id){
+  $sql = "SELECT * FROM fieldOfStudy WHERE id=?";
+  $stmt = $GLOBALS['mysqli'] -> prepare($sql);
+  $stmt -> bind_param("ii", $id);
+  $stmt -> execute();
+  return $stmt -> get_result();
+}
+
 ?>
