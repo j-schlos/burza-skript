@@ -4,14 +4,18 @@ session_start();
 include 'functions.php';
 include 'kitlab_db.php';
 
-if($_SERVER["REQUEST_METHOD"] == "GET"){
-
+if ($_SERVER["REQUEST_METHOD"] == "GET") {
 }
 
-if($_SERVER["REQUEST_METHOD"] == "POST"){
-        
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
+$result = get_products($_SESSION);
 
+//$faculty_query_run = get_faculty($_SESSION);
+//$faculty_query_run = get_faculty($_SESSION['id']);
+
+
+//$field_of_study_query_run = get_field_of_study($_SESSION);
 ?>
 
 <!DOCTYPE html>
@@ -51,8 +55,12 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                 </form>
 
                 <div id="account-buttons">
-                    <a id="header-login-button" class="header-acc-btn header-link" href="login.php"><div class="header-acc-btn-div">Přihlášení</div></a>
-                    <a id="header-signup-button" class="header-acc-btn header-link" href="registration.php"><div class="header-acc-btn-div">Registrace</div></a>
+                    <a id="header-login-button" class="header-acc-btn header-link" href="login.php">
+                        <div class="header-acc-btn-div">Přihlášení</div>
+                    </a>
+                    <a id="header-signup-button" class="header-acc-btn header-link" href="registration.php">
+                        <div class="header-acc-btn-div">Registrace</div>
+                    </a>
                 </div>
             </div>
         </div>
@@ -62,378 +70,193 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         <div class="stock-exchange-wrap">
             <section class="stock-exchange-category">
                 <h2>Kategorie</h2>
-                <div class="stock-exchange-category-list">
-                    <div class="stock-exchange-category-list-faculty">
-                        <button type="button" class="stock-exchange-category-list-faculty-collapsible" id="pef">
-                            <h3>PEF</h3>
-                        </button>
-                        <div class="stock-exchange-category-list-faculty-content">
-                            <div class="stock-exchange-category-list-faculty-content-department">
-                                <input type="checkbox" class="filter-check-input" id="EAM">
-                                <label for="EAM">Ekonomika a management</label>
-                            </div>
-                            <div class="stock-exchange-category-list-faculty-content-department">
-                                <input type="checkbox" class="filter-check-input" id="PAA">
-                                <label for="PAA">Podnikání a administrativa</label>
-                            </div>
-                            <div class="stock-exchange-category-list-faculty-content-department">
-                                <input type="checkbox" class="filter-check-input" id="VSSR">
-                                <label for="VSSR">Veřejná správa a regionální rozvoj</label>
-                            </div>
-                            <div class="stock-exchange-category-list-faculty-content-department">
-                                <input type="checkbox" class="filter-check-input" id="HKS">
-                                <label for="HKS">Hospodářská a kulturní studia</label>
-                            </div>
-                            <div class="stock-exchange-category-list-faculty-content-department">
-                                <input type="checkbox" class="filter-check-input" id="SI">
-                                <label for="SI">Systémové inženýrství</label>
-                            </div>
-                            <div class="stock-exchange-category-list-faculty-content-department">
-                                <input type="checkbox" class="filter-check-input" id="INFO">
-                                <label for="INFO">Informatika</label>
-                            </div>
-                        </div>
+                <form action="" method="GET">
+                    <div class="stock-exchange-category-list">
+                        <?php
+                        $faculty_query = "SELECT * FROM faculty";
+                        $faculty_query_run = mysqli_query($mysqli, $faculty_query);
+
+                        if (mysqli_num_rows($faculty_query_run) > 0) {
+                            foreach ($faculty_query_run as $faculty_list) {
+
+
+
+                        ?>
+                                <div class="stock-exchange-category-list-faculty" name="faculty[]">
+                                    <button type="button" class="stock-exchange-category-list-faculty-collapsible" id="<?php echo $faculty_list['name']; ?>">
+                                        <h3><?php echo $faculty_list['name']; ?></h3>
+                                    </button>
+                                    <div class="stock-exchange-category-list-faculty-content">
+
+                                        <?php
+                                        $field_of_study_query = "SELECT * FROM fieldOfStudy";
+                                        $field_of_study_query_run = mysqli_query($mysqli, $field_of_study_query);
+
+                                        if (mysqli_num_rows($field_of_study_query_run) > 0) {
+                                            foreach ($field_of_study_query_run as $field_of_study_list) {
+                                                if ($field_of_study_list['faculty_id'] == $faculty_list['id']) {
+                                                    $checked = [];
+                                                    if (isset($_GET['fields_of_study'])) {
+                                                        $checked = $_GET['fields_of_study'];
+                                                    }
+                                        ?>
+                                                    <div class="stock-exchange-category-list-faculty-content-department">
+                                                        <input type="checkbox" name="fields_of_study[]" value="<?php echo $field_of_study_list['id']; ?>" class="filter-check-input" id="<?php echo $field_of_study_list['id']; ?>" <?php
+                                                                                                                                                                                                                                    if (in_array($field_of_study_list['id'], $checked)) {
+                                                                                                                                                                                                                                        echo "checked";
+                                                                                                                                                                                                                                    }
+                                                                                                                                                                                                                                    ?> />
+                                                        <label for="<?php echo $field_of_study_list['id']; ?>"><?php echo $field_of_study_list['name'] ?></label>
+                                                    </div>
+                                        <?php
+                                                }
+                                            }
+                                        } else {
+                                            echo "Žádné obory nenalezeny";
+                                        }
+                                        ?>
+                                    </div>
+                                </div>
+                        <?php
+                            }
+                        } else {
+                            echo "Žádné obory nenalezeny";
+                        }
+                        ?>
                     </div>
-                    <div class="stock-exchange-category-list-faculty">
-                        <button type="button" class="stock-exchange-category-list-faculty-collapsible" id="fappz">
-                            <h3>FAPPZ</h3>
-                        </button>
-                        <div class="stock-exchange-category-list-faculty-content">
-                            <div class="stock-exchange-category-list-faculty-content-department">
-                                <input type="checkbox" class="filter-check-input" id="LANDAB">
-                                <label for="LANDAB">Ochrana krajiny a využívání přírodních zdrojů</label>
-                            </div>
-                            <div class="stock-exchange-category-list-faculty-content-department">
-                                <input type="checkbox" class="filter-check-input" id="PETIBH">
-                                <label for="PETIBH">Chov koní</label>
-                            </div>
-                            <div class="stock-exchange-category-list-faculty-content-department">
-                                <input type="checkbox" class="filter-check-input" id="PETIBE">
-                                <label for="PETIBE">Chov exotických zvířat</label>
-                            </div>
-                            <div class="stock-exchange-category-list-faculty-content-department">
-                                <input type="checkbox" class="filter-check-input" id="KYNOB">
-                                <label for="KYNOB">Kynologie</label>
-                            </div>
-                            <div class="stock-exchange-category-list-faculty-content-department">
-                                <input type="checkbox" class="filter-check-input" id="VETEB">
-                                <label for="VETEB">Veterinární asistent</label>
-                            </div>
-                            <div class="stock-exchange-category-list-faculty-content-department">
-                                <input type="checkbox" class="filter-check-input" id="REHAB">
-                                <label for="REHAB">Zoorehabilitace a asistenční aktivity se zvířaty</label>
-                            </div>
-                            <div class="stock-exchange-category-list-faculty-content-department">
-                                <input type="checkbox" class="filter-check-input" id="HORTIB">
-                                <label for="HORTIB">Zahradnictví</label>
-                            </div>
-                            <div class="stock-exchange-category-list-faculty-content-department">
-                                <input type="checkbox" class="filter-check-input" id="ARCHIB">
-                                <label for="ARCHIB">Krajinářská architektura</label>
-                            </div>
-                            <div class="stock-exchange-category-list-faculty-content-department">
-                                <input type="checkbox" class="filter-check-input" id="AKVAB">
-                                <label for="AKVAB">Akvakultura a péče o vodní ekosystémy</label>
-                            </div>
-                            <div class="stock-exchange-category-list-faculty-content-department">
-                                <input type="checkbox" class="filter-check-input" id="AGRIBF">
-                                <label for="AGRIBF">Faremní hospodaření</label>
-                            </div>
-                            <div class="stock-exchange-category-list-faculty-content-department">
-                                <input type="checkbox" class="filter-check-input" id="FYTOB">
-                                <label for="FYTOB">Rostlinná produkce</label>
-                            </div>
-                            <div class="stock-exchange-category-list-faculty-content-department">
-                                <input type="checkbox" class="filter-check-input" id="ANIMAB">
-                                <label for="ANIMAB">Chov hospodářských zvířat</label>
-                            </div>
-                            <div class="stock-exchange-category-list-faculty-content-department">
-                                <input type="checkbox" class="filter-check-input" id="AGRIBR">
-                                <label for="AGRIBR">Veřejná správa v zemědělství, rozvoji venkova a krajiny</label>
-                            </div>
-                            <div class="stock-exchange-category-list-faculty-content-department">
-                                <input type="checkbox" class="filter-check-input" id="AGRIBE">
-                                <label for="AGRIBE">Ekologické zemědělství</label>
-                            </div>
-                            <div class="stock-exchange-category-list-faculty-content-department">
-                                <input type="checkbox" class="filter-check-input" id="NUTRIB">
-                                <label for="NUTRIB">Výživa a potraviny</label>
-                            </div>
-                            <div class="stock-exchange-category-list-faculty-content-department">
-                                <input type="checkbox" class="filter-check-input" id="QUALIB">
-                                <label for="QUALIB">Kvalita potravin a zpracování zemědělských produktů</label>
-                            </div>
-                            <div class="stock-exchange-category-list-faculty-content-department">
-                                <input type="checkbox" class="filter-check-input" id="AGRIFOB">
-                                <label for="AGRIFOB">Agriculture and Food</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="stock-exchange-category-list-faculty">
-                        <button type="button" class="stock-exchange-category-list-faculty-collapsible" id="tf">
-                            <h3>TF</h3>
-                        </button>
-                        <div class="stock-exchange-category-list-faculty-content">
-                            <div class="stock-exchange-category-list-faculty-content-department">
-                                <input type="checkbox" class="filter-check-input" id="ZT">
-                                <label for="ZT">Zemědělská technika</label>
-                            </div>
-                            <div class="stock-exchange-category-list-faculty-content-department">
-                                <input type="checkbox" class="filter-check-input" id="SMAD">
-                                <label for="SMAD">Silniční a městská automobilová doprava</label>
-                            </div>
-                            <div class="stock-exchange-category-list-faculty-content-department">
-                                <input type="checkbox" class="filter-check-input" id="TTZO">
-                                <label for="TTZO">Technika a technologie zpracování odpadů</label>
-                            </div>
-                            <div class="stock-exchange-category-list-faculty-content-department">
-                                <input type="checkbox" class="filter-check-input" id="TZS">
-                                <label for="TZS">Technologická zařízení staveb</label>
-                            </div>
-                            <div class="stock-exchange-category-list-faculty-content-department">
-                                <input type="checkbox" class="filter-check-input" id="OPT">
-                                <label for="OPT">Obchod a podnikání s technikou</label>
-                            </div>
-                            <div class="stock-exchange-category-list-faculty-content-department">
-                                <input type="checkbox" class="filter-check-input" id="IŘTAK">
-                                <label for="IŘTAK">Informační a řídící technika v agropotravinářském komplexu</label>
-                            </div>
-                            <div class="stock-exchange-category-list-faculty-content-department">
-                                <input type="checkbox" class="filter-check-input" id="IÚ">
-                                <label for="IÚ">Inženýrství údržby</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="stock-exchange-category-list-faculty">
-                        <button type="button" class="stock-exchange-category-list-faculty-collapsible" id="fžp">
-                            <h3>FŽP</h3>
-                        </button>
-                        <div class="stock-exchange-category-list-faculty-content">
-                            <div class="stock-exchange-category-list-faculty-content-department">
-                                <input type="checkbox" class="filter-check-input" id="AE">
-                                <label for="AE">Aplikovaná ekologie</label>
-                            </div>
-                            <div class="stock-exchange-category-list-faculty-content-department">
-                                <input type="checkbox" class="filter-check-input" id="EDS">
-                                <label for="EDS">Environmental Data Science</label>
-                            </div>
-                            <div class="stock-exchange-category-list-faculty-content-department">
-                                <input type="checkbox" class="filter-check-input" id="EE">
-                                <label for="EE">Environmental Engineering</label>
-                            </div>
-                            <div class="stock-exchange-category-list-faculty-content-department">
-                                <input type="checkbox" class="filter-check-input" id="GISDPZŽP">
-                                <label for="GISDPZŽP">Geografické informační systémy a dálkový průzkum Země v životním prostředí</label>
-                            </div>
-                            <div class="stock-exchange-category-list-faculty-content-department">
-                                <input type="checkbox" class="filter-check-input" id="KR">
-                                <label for="KR">Krajinářství</label>
-                            </div>
-                            <div class="stock-exchange-category-list-faculty-content-department">
-                                <input type="checkbox" class="filter-check-input" id="ÚP">
-                                <label for="ÚP">Územní plánování</label>
-                            </div>
-                            <div class="stock-exchange-category-list-faculty-content-department">
-                                <input type="checkbox" class="filter-check-input" id="ÚTSSŽP">
-                                <label for="ÚTSSŽP">Územní technická a správní služba v životním prostředí</label>
-                            </div>
-                            <div class="stock-exchange-category-list-faculty-content-department">
-                                <input type="checkbox" class="filter-check-input" id="VH">
-                                <label for="VH">Vodní hospodářství</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="stock-exchange-category-list-faculty">
-                        <button type="button" class="stock-exchange-category-list-faculty-collapsible" id="fld">
-                            <h3>FLD</h3>
-                        </button>
-                        <div class="stock-exchange-category-list-faculty-content">
-                            <div class="stock-exchange-category-list-faculty-content-department">
-                                <input type="checkbox" class="filter-check-input" id="MPŽPZ">
-                                <label for="MPŽPZ">Myslivost a péče o životní prostředí zvěře</label>
-                            </div>
-                            <div class="stock-exchange-category-list-faculty-content-department">
-                                <input type="checkbox" class="filter-check-input" id="LSOPLE">
-                                <label for="LSOPLE">Lesnictví, specializace Ochrana a pěstování lesních ekosystémů</label>
-                            </div>
-                            <div class="stock-exchange-category-list-faculty-content-department">
-                                <input type="checkbox" class="filter-check-input" id="LSEŘLH">
-                                <label for="LSEŘLH">Lesnictví, specializace Ekonomika a řízení lesního hospodářství</label>
-                            </div>
-                            <div class="stock-exchange-category-list-faculty-content-department">
-                                <input type="checkbox" class="filter-check-input" id="DSPDNP">
-                                <label for="DSPDNP">Dřevařství, specializace Podnikání ve dřevozpracujícím a nábytkářském průmyslu</label>
-                            </div>
-                            <div class="stock-exchange-category-list-faculty-content-department">
-                                <input type="checkbox" class="filter-check-input" id="DSZD">
-                                <label for="DSZD">Dřevařství, specializace Zpracování dřeva</label>
-                            </div>
-                            <div class="stock-exchange-category-list-faculty-content-department">
-                                <input type="checkbox" class="filter-check-input" id="KPT">
-                                <label for="KPT">Konzervace přírodnin a taxidermie</label>
-                            </div>
-                            <div class="stock-exchange-category-list-faculty-content-department">
-                                <input type="checkbox" class="filter-check-input" id="SA">
-                                <label for="SA">Systémová arboristika</label>
-                            </div>
-                            <div class="stock-exchange-category-list-faculty-content-department">
-                                <input type="checkbox" class="filter-check-input" id="FSFEPS">
-                                <label for="FSFEPS">Forestry, specializace Forest ecosystems protection and silviculture</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="stock-exchange-category-list-faculty">
-                        <button type="button" class="stock-exchange-category-list-faculty-collapsible" id="ftz">
-                            <h3>FTZ</h3>
-                        </button>
-                        <div class="stock-exchange-category-list-faculty-content">
-                            <div class="stock-exchange-category-list-faculty-content-department">
-                                <input type="checkbox" class="filter-check-input" id="TZ">
-                                <label for="TZ">Tropické zemědělství</label>
-                            </div>
-                            <div class="stock-exchange-category-list-faculty-content-department">
-                                <input type="checkbox" class="filter-check-input" id="ICARD">
-                                <label for="ICARD">International Cooperation in Agricultural and Rural Development</label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                    <button type="submit" id="filter">Filtrovat</button>
+                </form>
             </section>
             <section class="stock-exchange-script">
                 <h2>Skripta</h2>
                 <div class="stock-exchange-script-menu">
-                    <div class="stock-exchange-script-menu-detail">
-                        <h3>Název</h3>
-                        <div class="stock-exchange-script-menu-detail-wrap">
-                            <div class="stock-exchange-script-menu-detail-left">
-                                <img src="book1.jpg" alt="Náhled nabízených skript">
-                            </div>
-                            <div class="stock-exchange-script-menu-detail-right">
-                                <div class="stock-exchange-script-menu-detail-right-price">
-                                    <span>Cena</span>
-                                </div>
-                                <a href="./product-detail.php">Zobrazit</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="stock-exchange-script-menu-detail">
-                        <h3>Název</h3>
-                        <div class="stock-exchange-script-menu-detail-wrap">
-                            <div class="stock-exchange-script-menu-detail-left">
-                                <img src="book1.jpg" alt="Náhled nabízených skript">
-                            </div>
-                            <div class="stock-exchange-script-menu-detail-right">
-                                <div class="stock-exchange-script-menu-detail-right-price">
-                                    <span>Cena</span>
-                                </div>
-                                <a href="./product-detail.php">Zobrazit</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="stock-exchange-script-menu-detail">
-                        <h3>Název</h3>
-                        <div class="stock-exchange-script-menu-detail-wrap">
-                            <div class="stock-exchange-script-menu-detail-left">
-                                <img src="book1.jpg" alt="Náhled nabízených skript">
-                            </div>
-                            <div class="stock-exchange-script-menu-detail-right">
-                                <div class="stock-exchange-script-menu-detail-right-price">
-                                    <span>Cena</span>
-                                </div>
-                                <a href="./product-detail.php">Zobrazit</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="stock-exchange-script-menu-detail">
-                        <h3>Název</h3>
-                        <div class="stock-exchange-script-menu-detail-wrap">
-                            <div class="stock-exchange-script-menu-detail-left">
-                                <img src="book1.jpg" alt="Náhled nabízených skript">
-                            </div>
-                            <div class="stock-exchange-script-menu-detail-right">
-                                <div class="stock-exchange-script-menu-detail-right-price">
-                                    <span>Cena</span>
-                                </div>
-                                <a href="./product-detail.php">Zobrazit</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="stock-exchange-script-menu-detail">
-                        <h3>Název</h3>
-                        <div class="stock-exchange-script-menu-detail-wrap">
-                            <div class="stock-exchange-script-menu-detail-left">
-                                <img src="book1.jpg" alt="Náhled nabízených skript">
-                            </div>
-                            <div class="stock-exchange-script-menu-detail-right">
-                                <div class="stock-exchange-script-menu-detail-right-price">
-                                    <span>Cena</span>
-                                </div>
-                                <a href="./product-detail.php">Zobrazit</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="stock-exchange-script-menu-detail">
-                        <h3>Název</h3>
-                        <div class="stock-exchange-script-menu-detail-wrap">
-                            <div class="stock-exchange-script-menu-detail-left">
-                                <img src="book1.jpg" alt="Náhled nabízených skript">
-                            </div>
-                            <div class="stock-exchange-script-menu-detail-right">
-                                <div class="stock-exchange-script-menu-detail-right-price">
-                                    <span>Cena</span>
-                                </div>
-                                <a href="./product-detail.php">Zobrazit</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="stock-exchange-script-menu-detail">
-                        <h3>Název</h3>
-                        <div class="stock-exchange-script-menu-detail-wrap">
-                            <div class="stock-exchange-script-menu-detail-left">
-                                <img src="book1.jpg" alt="Náhled nabízených skript">
-                            </div>
-                            <div class="stock-exchange-script-menu-detail-right">
-                                <div class="stock-exchange-script-menu-detail-right-price">
-                                    <span>Cena</span>
-                                </div>
-                                <a href="./product-detail.php">Zobrazit</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="stock-exchange-script-menu-detail">
-                        <h3>Název</h3>
-                        <div class="stock-exchange-script-menu-detail-wrap">
-                            <div class="stock-exchange-script-menu-detail-left">
-                                <img src="book1.jpg" alt="Náhled nabízených skript">
-                            </div>
-                            <div class="stock-exchange-script-menu-detail-right">
-                                <div class="stock-exchange-script-menu-detail-right-price">
-                                    <span>Cena</span>
-                                </div>
-                                <a href="./product-detail.php">Zobrazit</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="stock-exchange-script-menu-detail">
-                        <h3>Název</h3>
-                        <div class="stock-exchange-script-menu-detail-wrap">
-                            <div class="stock-exchange-script-menu-detail-left">
-                                <img src="book1.jpg" alt="Náhled nabízených skript">
-                            </div>
-                            <div class="stock-exchange-script-menu-detail-right">
-                                <div class="stock-exchange-script-menu-detail-right-price">
-                                    <span>Cena</span>
-                                </div>
-                                <a href="./product-detail.php">Zobrazit</a>
-                            </div>
-                        </div>
-                    </div>
+                    <?php
+                    //deklarace promenných
+                    $page = 0;
+                    $counter = 0;
+                    $valid_products_sum = 0;
+                    //po stisknutí tlačítka volání funkcí
+                    if (isset($_POST['prev_page'])) {
+                        prev_page();
+                    }
+                    if (isset($_POST['next_page'])) {
+                        next_page();
+                    }
+                    function prev_page()
+                    {
+                        global $page;
+                        if ($page >= 12) {
+                            $page -= 12;
+                        }
+                    }
+                    function next_page()
+                    {
+                        global $page;
+                        global $mysqli;
+                        $valid_products_sum = 0;
+                        if (isset($_GET['fields_of_study'])) {
+                            $fos_checked = [];
+                            $fos_checked = $_GET['fields_of_study'];
+                            foreach ($fos_checked as $row_fos) {
+                                $products = "SELECT * FROM advertisements WHERE field_of_study_id IN ($row_fos)";
+                                $products_run = mysqli_query($mysqli, $products);
+                                $valid_products_sum += mysqli_num_rows($products_run);
+                            }
+                                if (($page < $valid_products_sum) && ($page+12 != $valid_products_sum)) {
+                                    $page += 12;
+                                }
+                        } else {
+                            $products = "SELECT * FROM advertisements";
+                            $products_run = mysqli_query($mysqli, $products);
+                            $valid_products_sum = mysqli_num_rows($products_run);
+                            if (($page < $valid_products_sum) && ($page+12 != $valid_products_sum)) {
+                                $page += 12;
+                            }
+                        }
+                    }
+                    //pokud je vybraný filtr, vypisují se jen zvolené produkty             
+                    if (isset($_GET['fields_of_study'])) {
+                        $fos_checked = [];
+                        $fos_checked = $_GET['fields_of_study']; //uložení vybraného filtru
+                        //výpis všech zvolených filtrů
+                        foreach ($fos_checked as $row_fos) {
+                            $products = "SELECT * FROM advertisements WHERE field_of_study_id IN ($row_fos)";
+                            $products_run = mysqli_query($mysqli, $products);
+                            if (mysqli_num_rows($products_run) > 0) {
+                                $valid_products_sum += mysqli_num_rows($products_run); //suma všech produktů odpovidající zvolenému filtru
+                                //výpis produktů z každého zvoleného filtru
+                                foreach ($products_run as $product) {
+                                    //podmínka na maximálně 12 produktů na stránce
+                                    if (($counter >= $page) && ($counter < $page + 12)) {
+                    ?>
+                                        <div class="stock-exchange-script-menu-detail">
+                                            <h3><?php echo $product["title"] ?></h3>
+                                            <div class="stock-exchange-script-menu-detail-wrap">
+                                                <div class="stock-exchange-script-menu-detail-left">
+                                                    <img src="book1.jpg" alt="Náhled nabízených skript">
+                                                </div>
+                                                <div class="stock-exchange-script-menu-detail-right">
+                                                    <div class="stock-exchange-script-menu-detail-right-price">
+                                                        <span><?php echo $product["price"] . " Kč"; ?></span>
+                                                    </div>
+                                                    <a href="./product-detail.php">Zobrazit</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <?php
+                                    }
+                                    $counter++;
+                                }
+                            }
+                        }
+                    }
+                    //pokud není zvolený žádný filtr, zobrazí se všechny produkty
+                    else {
+                        $products = "SELECT * FROM advertisements";
+                        $products_run = mysqli_query($mysqli, $products);
+                        if (mysqli_num_rows($products_run) > 0) {
+                            $valid_products_sum = mysqli_num_rows($products_run); //suma všech produktů odpovidající zvolenému filtru = všech
+                            //výpis produktů
+                            foreach ($products_run as $product) {
+                                //podmínka na maximálně 12 produktů na stránce
+                                if (($counter >= $page) && ($counter < $page + 12)) {
+                                    ?>
+                                    <div class="stock-exchange-script-menu-detail">
+                                        <h3><?php echo $product["title"] ?></h3>
+                                        <div class="stock-exchange-script-menu-detail-wrap">
+                                            <div class="stock-exchange-script-menu-detail-left">
+                                                <img src="data:image/jpg;charset=utf8;base64,<?php echo base64_encode($product["image"]) ?>" alt="Náhled nabízených skript">
+                                            </div>
+                                            <div class="stock-exchange-script-menu-detail-right">
+                                                <div class="stock-exchange-script-menu-detail-right-price">
+                                                    <span><?php echo $product["price"] . " Kč"; ?></span>
+                                                </div>
+                                                <a href="./product-detail.php">Zobrazit</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                    <?php
+                                }
+                                $counter++;
+                            }
+                        } else {
+                            echo "Nenalezeny žádné položky";
+                        }
+                    }
+                    ?>
+                    <?php  ?>
                 </div>
+                <!-- tlačítka na změnu stránky s produkty -->
+                <form method="POST">
+                    <input type="submit" name="prev_page" value="< předchozí" id="prev" <?php if ($page == 0) { ?>disabled<?php } ?>>
+                    </input>
+                        <input type="submit" name="next_page" value="následující >" id="next"<?php if (($page+12 >= $valid_products_sum)){ ?> disabled <?php } ?>></input>
+                </form>
             </section>
         </div>
     </div>
     <footer>
-        
+
         <div id="footer-nav">
             <img id="footer-logo" src="./logo.png" alt="Logo">
             <ul id="footer-nav-list">

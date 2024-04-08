@@ -1021,12 +1021,25 @@ ul {
 }
 
 .stock-exchange-script{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     width: 80%;
+}
+
+.stock-exchange-script form{
+    margin-top: 1rem;
+}
+
+.stock-exchange-script form input{
+    padding: 0.5rem 1rem;
+    font-size: 1.2rem;
 }
 
 .stock-exchange-script-menu{
     display: grid;
-    grid-template-columns: auto auto auto;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-auto-rows: 1fr;
     gap: 1rem;
 }
 .stock-exchange-script-menu-detail{
@@ -1105,28 +1118,40 @@ ul {
     content: "\2796"; /* Unicode character for "minus" sign (-) */;
 }
 
-#pef{
+#PEF{
     background-color: #9b0000;
 }
 
-#fappz{
+#FAPPZ{
     background-color: #f7a000;
 }
 
-#tf{
+#TF{
     background-color: #413c91;
 }
 
-#fžp{
+#FŽP{
     background-color: #00aaa0;
 }
 
-#fld{
+#FLD{
     background-color: #289b37;
 }
 
-#ftz{
+#FTZ{
     background-color: #eb6408;
+}
+
+#filter {
+    padding: 0.5rem 1rem;
+    background-color: white;
+    border: 2px solid black;
+    width: 100%;
+}
+
+#filter:hover{
+    background-color: black;
+    color: white;
 }
 
 .stock-exchange-category-list-faculty-content{
@@ -1298,7 +1323,7 @@ ul {
     }
 
     .stock-exchange-script-menu{
-        grid-template-columns: auto auto;
+        grid-template-columns: 1fr 1fr;
     }
 
     .stock-exchange-category{
@@ -1426,7 +1451,7 @@ ul {
 
 @media only screen and (max-width: 863px){
     .stock-exchange-script-menu{
-        grid-template-columns: auto;
+        grid-template-columns: 1fr;
     }
 
     .stock-exchange-category{
