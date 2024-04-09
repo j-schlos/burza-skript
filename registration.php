@@ -1,90 +1,27 @@
 <?php
-session_start(); 
+session_start();
+
+include 'functions.php';
+//include 'kitlab_db.php';
 
 // define variables and set to empty values
-$error = false;
 $fname = $lname = $email = $password = "";
-$errorMsg = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {     
-    include 'kitlab_db.php';
 
     $fname = process_input($_POST['fname']);
-
+    $_SESSION['inputFName'] = $fname;
     $lname = process_input($_POST['lname']);
-
+    $_SESSION['inputLName'] = $lname;
     $email = process_input($_POST['email']);
-
+    $_SESSION['inputEmail'] = $email;
     $password = process_input($_POST["password"]);
-
     $repassword = process_input($_POST["repassword"]);
 
-    //TODO validace inputů?
-
-    if(strcmp($password, $repassword) != 0){
-        $errorMsg = "Hesla se neshodují!";
-        $error = true;
-    }
-    else{
-        //check jestli user už neexistuje
-        $sql = "SELECT * FROM users WHERE email=?";
-        $stmt = $mysqli -> prepare($sql);
-        $stmt -> bind_param("s", $email);
-        $stmt -> execute();
-        $result = $stmt -> get_result();
-        if(mysqli_num_rows($result) > 0){
-            $errorMsg = "Uživatel s tímto emailem již existuje";
-            $error = true;
-        }
-
-        if(!$error){
-            //sql query na insert údajů uživatele
-            $sql = "INSERT INTO users (fname, lname, email, password) VALUES (?, ?, ?, ?)";
-            $stmt = $mysqli -> prepare($sql);
-            $stmt -> bind_param("ssss", $fname, $lname, $email, $password);
-            $stmt -> execute();
-
-            $_SESSION['email'] = $email;
-            redirect("./my-account.php");
-        }
-
-        
- /*       
-        $result = $stmt -> get_result();
-
-        if (mysqli_num_rows($result) === 1) {
-
-            $row = $result -> fetch_assoc();
-
-            if ($row['username'] === $username && $row['password'] === $password) {
-                $_SESSION['username'] = $row['username'];
-                //uživatel zadal jméno a heslo správně, je přihlášený
-                redirect("./my-account.php");
-            }
-        }else{
-            //špatně zadaný username?
-
-            exit();
-
-        }*/
+    if(!signup_inputs_empty($fname, $lname, $email, $password, $repassword)){
+        signup($fname, $lname, $email, $password, $repassword);
     }
 }
-
-function show_alert_box($message) {
-    echo "<script>alert('$message');</script>"; 
-}
-
-function process_input($data) {
-    $data = trim($data);
-    $data = stripslashes($data);
-    $data = htmlspecialchars($data);
-    return $data;
-  }
-function redirect($url, $statusCode = 303) {
-    header('Location: ' . $url, true, $statusCode);
-    exit();
-  }
-
 ?>
 
 <!DOCTYPE html>
@@ -102,7 +39,7 @@ function redirect($url, $statusCode = 303) {
 
 <body id="Registration-body">
     <header>
-        <img id="header-logo" src="./logo.png" href="./index.html" alt="Logo"></img>
+        <img id="header-logo" src="./logo.png" href="./index.php" alt="Logo"></img>
         <div id="hamburger">
             <span class="bar"></span>
             <span class="bar"></span>
@@ -111,9 +48,9 @@ function redirect($url, $statusCode = 303) {
         <div id="hamburger-content">
             <div id="header-first-part" class="header-side">
                 <nav id="header-nav">
-                    <a class="header-nav-link header-link" href="./index.html">Domů</a>
-                    <a class="header-nav-link header-link" href="./stock-exchange.html">Burza</a>
-                    <a class="header-nav-link header-link" href="./contact.html">Kontakt</a>
+                    <a class="header-nav-link header-link" href="./index.php">Domů</a>
+                    <a class="header-nav-link header-link" href="./stock-exchange.php">Burza</a>
+                    <a class="header-nav-link header-link" href="./contact.php">Kontakt</a>
                 </nav>
             </div>
 
@@ -139,18 +76,18 @@ function redirect($url, $statusCode = 303) {
             <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="POST">
                 <h1>Registrace</h1>
             
-                        <input id="fname" name="fname" class="registration-input" type="text" placeholder="Jméno" required title="Textové pole pro Jméno">
+                    <input id="fname" name="fname" class="registration-input" type="text" placeholder="Jméno" value="<?php if(isset($_SESSION["inputFName"])) echo $_SESSION["inputFName"]?>" required title="Textové pole pro Jméno">
+        
+                    <input id="lname" name="lname" class="registration-input" type="text" placeholder="Příjmení" value="<?php if(isset($_SESSION["inputLName"])) echo $_SESSION["inputLName"]?>" required title="Textové pole pro Příjmení">
             
-                        <input id="lname" name="lname" class="registration-input" type="text" placeholder="Příjmení" required title="Textové pole pro Příjmení">
             
-            
-                    <input id="email" name="email" class="registration-input" type="text" placeholder="Emailová adresa" required title="Textové pole pro Emailovou adresu">
+                    <input id="email" name="email" class="registration-input" type="text" placeholder="Emailová adresa" value="<?php if(isset($_SESSION["inputEmail"])) echo $_SESSION["inputEmail"]?>" required title="Textové pole pro Emailovou adresu">
             
                     <input id="password" name="password" class="registration-input" type="password" placeholder="Heslo" required title="Textové pole pro Heslo">
             
                     <input id="repassword" name="repassword" class="registration-input" type="password" placeholder="Heslo znovu" required title="Textové pole pro Heslo znovu">
             
-                    <p class="error-msg"><?php echo $errorMsg ?></p>
+                    <p class="error-msg"><?php echo_all_errors();?></p>
 
                 <button type="submit" class="Registration-submit">Registrovat</button>
             </form>
@@ -161,9 +98,9 @@ function redirect($url, $statusCode = 303) {
             <div id="footer-nav">
                 <img id="footer-logo" src="./logo.png" alt="Logo">
                 <ul id="footer-nav-list">
-                    <li><a class="footer-nav-link" href="./index.html">Domů</a></li>
-                    <li><a class="footer-nav-link" href="./stock-exchange.html">Burza</a></li>
-                    <li><a class="footer-nav-link" href="./contact.html">Kontakt</a></li>
+                    <li><a class="footer-nav-link" href="./index.php">Domů</a></li>
+                    <li><a class="footer-nav-link" href="./stock-exchange.php">Burza</a></li>
+                    <li><a class="footer-nav-link" href="./contact.php">Kontakt</a></li>
                     <li><a class="footer-nav-link" href="./my-account.php">Můj účet</a></li>
                 </ul>
             </div>

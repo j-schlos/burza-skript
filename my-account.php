@@ -1,24 +1,17 @@
 <?php
 session_start(); 
 
+include 'functions.php';
+//include 'kitlab_db.php';
+
 // define variables and set to empty values
-$error = false;
 $fname = $lname = $email = $phone = $street = $city = $zipcode = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "GET") {
     
-    if(empty($_SESSION['email'])){
-        redirect("./login.php");
-    }
-    include 'kitlab_db.php';
+    redirect_user_if_not_logged_in();
 
-    
-    //sql query select na session email
-    $sql = "SELECT * FROM users WHERE email=?";
-    $stmt = $mysqli -> prepare($sql);
-    $stmt -> bind_param("s", $_SESSION['email']);
-    $stmt -> execute();
-    $result = $stmt -> get_result();
+    $result = get_user_by_email($_SESSION['email']);
 
     if (mysqli_num_rows($result) === 1) {
         $row = $result -> fetch_assoc();
@@ -32,10 +25,20 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
     }
 }
 
-function redirect($url, $statusCode = 303)
-{
-   header('Location: ' . $url, true, $statusCode);
-   exit();
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+    $fname = $_POST['fname'];
+    $lname = $_POST['lname'];
+    $email = $_POST['email'];
+    $phone = $_POST['phone'];
+    $street = $_POST['street'];
+    $city = $_POST['city'];
+    $zipcode = $_POST['zipcode'];
+
+    if(!account_data_change_inputs_empty($fname, $lname, $email)){
+        change_account_data($fname, $lname, $email, $phone, $street, $city, $zipcode);
+    }
+
 }
 
 ?>
@@ -53,7 +56,7 @@ function redirect($url, $statusCode = 303)
  </head>
 <body>
     <header>
-        <img id="header-logo" src="./logo.png" href="./index.html" alt="Logo"></img>
+        <img id="header-logo" src="./logo.png" href="./index.php" alt="Logo"></img>
         <div id="hamburger">
             <span class="bar"></span>
             <span class="bar"></span>
@@ -62,9 +65,9 @@ function redirect($url, $statusCode = 303)
         <div id="hamburger-content">
             <div id="header-first-part" class="header-side">
                 <nav id="header-nav">
-                    <a class="header-nav-link header-link" href="./index.html">Domů</a>
-                    <a class="header-nav-link header-link" href="./stock-exchange.html">Burza</a>
-                    <a class="header-nav-link header-link" href="./contact.html">Kontakt</a>
+                    <a class="header-nav-link header-link" href="./index.php">Domů</a>
+                    <a class="header-nav-link header-link" href="./stock-exchange.php">Burza</a>
+                    <a class="header-nav-link header-link" href="./contact.php">Kontakt</a>
                 </nav>
             </div>
 
@@ -83,33 +86,35 @@ function redirect($url, $statusCode = 303)
     </header>
     <div class="Signup-container">
         <div class="UserInfo-container">
-            <div class="NameContainer-wrapper">
-                <img class="userImg" src="avatar.png" alt="">
-                <div class="NameContainer">
-                    <h2>Osobní údaje</h2>
-                    <input id="Acc-Name-btn" class="Account-btns" type="text" placeholder="Jméno" value="<?php echo $fname ?>" required title="Textové pole pro Jméno">
-                    <input id="Acc-Surname-btn" class="Account-btns" type="text" placeholder="Příjmení" value="<?php echo $lname ?>" required title="Textové pole pro Příjmení">
+            <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="POST">
+                <div class="NameContainer-wrapper">
+                    <img class="userImg" src="avatar.png" alt="">
+                    <div class="NameContainer">
+                        <h2>Osobní údaje</h2>
+                        <input id="Acc-Name-btn" name="fname" class="Account-btns" type="text" placeholder="Jméno" value="<?php echo $fname ?>" required title="Textové pole pro Jméno">
+                        <input id="Acc-Surname-btn" name="lname" class="Account-btns" type="text" placeholder="Příjmení" value="<?php echo $lname ?>" required title="Textové pole pro Příjmení">
+                    </div>
                 </div>
-            </div>
-    
-                <input id="Acc-Email-btn" class="Account-btns" type="text" placeholder="Emailová adresa" value="<?php echo $email ?>" required title="Textové pole pro "Emailovou adresu>
-                <input id="Acc-Phone-btn" class="Account-btns" type="text" placeholder="Telefon" value="<?php echo $phone ?>" required title="Textové pole pro telefonní číslo">
-                <input id="Acc-Address-btn" class="Account-btns" type="text" placeholder="Adresa" value="<?php echo $street ?>" required title="Textové pole pro Ulici">
-                <input id="Acc-City-btn" class="Account-btns" type="text" placeholder="Město" value="<?php echo $city ?>" required title="Textové pole pro Město">
-                <input id="Acc-PSC-btn" class="Account-btns" type="text" placeholder="PSČ" value="<?php echo $zipcode ?>" required title="Textové pole pro PSČ">
-    
-            <div class="Accout-change-buttons">
-                <button type="submit" id="change-submit">Upravit </button>
-                <button type="submit" id="pass-change-submit">Změnit heslo </button>
-    </div>
+        
+                    <input id="Acc-Email-btn" name="email" class="Account-btns" type="text" placeholder="Emailová adresa" value="<?php echo $email ?>" required title="Textové pole pro "Emailovou adresu>
+                    <input id="Acc-Phone-btn" name="phone" class="Account-btns" type="text" placeholder="Telefon" value="<?php echo $phone ?>" title="Textové pole pro telefonní číslo">
+                    <input id="Acc-Address-btn" name="street" class="Account-btns" type="text" placeholder="Adresa" value="<?php echo $street ?>" title="Textové pole pro Ulici">
+                    <input id="Acc-City-btn" name="city" class="Account-btns" type="text" placeholder="Město" value="<?php echo $city ?>" title="Textové pole pro Město">
+                    <input id="Acc-PSC-btn" name="zipcode" class="Account-btns" type="text" placeholder="PSČ" value="<?php echo $zipcode ?>" title="Textové pole pro PSČ">
+                    <p class="error-msg"><?php echo_all_errors();?></p>
+                <div class="Accout-change-buttons">
+                    <button type="submit"  id="change-submit">Upravit</button>
+                    <button type="button"  id="pass-change-submit" onClick="Javascript:window.location.href = './password-change.php';">Změnit heslo</button>
+                </div>
+            </form>
         </div>
         <div class="Info-Container">
             <div class="Account-ads-box">
                 <h2>Moje inzeráty</h2>
                 <ul id="acc-ads-list">
-                    <li><a id="acc-ad1" href="./product-detail.html">Inzerát 1</a></li>
-                    <li><a id="acc-ad2" href="./product-detail.html">Inzerát 2</a></li>
-                    <li><a id="acc-ad3" href="./product-detail.html">Inzerát 3</a></li>
+                    <li><a id="acc-ad1" href="./product-detail.php">Inzerát 1</a></li>
+                    <li><a id="acc-ad2" href="./product-detail.php">Inzerát 2</a></li>
+                    <li><a id="acc-ad3" href="./product-detail.php">Inzerát 3</a></li>
                 </ul>
             </div>
             <div class="Account-purchases-box">
@@ -127,9 +132,9 @@ function redirect($url, $statusCode = 303)
         <div id="footer-nav">
             <img id="footer-logo" src="./logo.png" alt="Logo">
             <ul id="footer-nav-list">
-                <li><a class="footer-nav-link" href="./index.html">Domů</a></li>
-                <li><a class="footer-nav-link" href="./stock-exchange.html">Burza</a></li>
-                <li><a class="footer-nav-link" href="./contact.html">Kontakt</a></li>
+                <li><a class="footer-nav-link" href="./index.php">Domů</a></li>
+                <li><a class="footer-nav-link" href="./stock-exchange.php">Burza</a></li>
+                <li><a class="footer-nav-link" href="./contact.php">Kontakt</a></li>
                 <li><a class="footer-nav-link" href="./my-account.php">Můj účet</a></li>
             </ul>
         </div>

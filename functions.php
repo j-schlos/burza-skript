@@ -304,21 +304,6 @@ function change_account_data($fname, $lname, $email, $phone, $street, $city, $zi
 
 //END - změna osobních údajů
 
-//START - načtení detailu produktu
-
-function load_product_details($id){
-    $result = get_product_by_id($id);
-    if (mysqli_num_rows($result) === 1) {
-      return $result -> fetch_assoc();
-    }
-    else{
-      redirect("./not_found.html");
-    }
-
-}
-
-//END - načtení detailu prodouktu
-
 function get_user_by_email($email){
     //sql query select na zadaný email
     $sql = "SELECT * FROM users WHERE email=?";
@@ -326,16 +311,6 @@ function get_user_by_email($email){
     $stmt -> bind_param("s", $email);
     $stmt -> execute();
     return $stmt -> get_result();
-}
-
-function get_user_by_id($id){
-  //sql query select na zadaný email
-  $sql = "SELECT * FROM users WHERE id=?";
-  $stmt = $GLOBALS['mysqli'] -> prepare($sql);
-  $stmt -> bind_param("i", $id);
-  $stmt -> execute();
-  $result = $stmt -> get_result();
-  return $result -> fetch_assoc();
 }
 
 function get_user_id_by_email($email){

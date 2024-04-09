@@ -724,7 +724,6 @@ footer p{
 
 .Account-btns {
     width:100%;
-    height:50%;
     background:transparent;
     border:none;
     outline:none;
@@ -762,7 +761,7 @@ ul {
 
 }
 
-#change-submit{
+#change-submit, #pass-change-submit{
     width:35%;
     height:45px;
     background:var(--header-nav-blue);
@@ -775,7 +774,7 @@ ul {
     color: var(--white);
     font-weight:600;
 }
-#pass-change-submit{
+#F{
     width:64%;
     height:45px;
     background:var(--header-nav-blue);
@@ -810,13 +809,18 @@ ul {
     flex-direction: column;
     align-items: center;
     max-width: 60%;
+    width: 60%;
     margin: 3rem auto;
 }
 
 .add-advertisement-wrap{
+    width: 100%;
+}
+
+.add-advertisement-wrap form{
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
 }
 
 .add-advertisement-form{
@@ -831,10 +835,6 @@ ul {
 
 .add-advertisement-form h1{
     margin-top: 0;
-}
-
-.add-advertisement-form form{
-    max-width: 100%;
 }
 
 .add-advertisement textarea{
@@ -857,11 +857,6 @@ ul {
 .add-advertisement-image input{
     align-self: center;
     margin-top: 2rem;
-}
-
-.add-advertisement-btn{
-    align-self: center;
-    margin-top: 10vh;
 }
 
 /* ################# Detail produktu ######################## */
@@ -1032,7 +1027,8 @@ ul {
 
 .stock-exchange-script-menu{
     display: grid;
-    grid-template-columns: auto auto auto;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-auto-rows: 1fr;
     gap: 1rem;
 }
 .stock-exchange-script-menu-detail{
@@ -1111,28 +1107,40 @@ ul {
     content: "\2796"; /* Unicode character for "minus" sign (-) */;
 }
 
-#pef{
+#PEF{
     background-color: #9b0000;
 }
 
-#fappz{
+#FAPPZ{
     background-color: #f7a000;
 }
 
-#tf{
+#TF{
     background-color: #413c91;
 }
 
-#fžp{
+#FŽP{
     background-color: #00aaa0;
 }
 
-#fld{
+#FLD{
     background-color: #289b37;
 }
 
-#ftz{
+#FTZ{
     background-color: #eb6408;
+}
+
+#filter {
+    padding: 0.5rem 1rem;
+    background-color: white;
+    border: 2px solid black;
+    width: 100%;
+}
+
+#filter:hover{
+    background-color: black;
+    color: white;
 }
 
 .stock-exchange-category-list-faculty-content{
@@ -1169,7 +1177,7 @@ ul {
 
 /* ########### tlačítka ############### */
 
-#contact-btn, #add-advertisement-btn, .view-product, .Registration-submit, .login-submit, #reset-password, #pass-change-submit, #change-submit{
+#contact-btn, #add-advertisement-btn, .view-product, .Registration-submit, .login-submit, #reset-password, #pass-change-submit, #change-submit, #change-password-btn{
     cursor: pointer;
     background: var(--header-nav-blue);
     border: none;
@@ -1178,7 +1186,7 @@ ul {
     transition: background 0.2s ease-in;
 }
 
-#contact-btn:hover, #insert-images-btn:hover, #add-advertisement-btn:hover, .view-product:hover, .Registration-submit:hover, .login-submit:hover, #reset-password:hover, #pass-change-submit:hover, #change-submit:hover{
+#contact-btn:hover, #insert-images-btn:hover, #add-advertisement-btn:hover, .view-product:hover, .Registration-submit:hover, .login-submit:hover, #reset-password:hover, #pass-change-submit:hover, #change-submit:hover, #change-password-btn:hover{
     background: var(--header-nav-blue-hover);
 }
 
@@ -1205,6 +1213,12 @@ ul {
     margin-top: 8px;
 }
 
+#add-advertisement-btn{
+    font-size: 1em;
+    padding: 0.6em;
+    align-self: flex-end;
+}
+
 #reset-password{
     width:100%;
     height:45px;
@@ -1217,6 +1231,29 @@ ul {
     font-size:16px;
     color: var(--white);
     font-weight:600;
+}
+
+.change-password{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.change-password-wrap form{
+    width: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.change-password-wrap input{
+    margin-bottom: 0.6em;
+}
+
+#change-password-btn{
+    padding: 0.6em;
+    font-size: 0.9em;
 }
 
 .error-msg{
@@ -1275,7 +1312,7 @@ ul {
     }
 
     .stock-exchange-script-menu{
-        grid-template-columns: auto auto;
+        grid-template-columns: 1fr 1fr;
     }
 
     .stock-exchange-category{
@@ -1403,7 +1440,7 @@ ul {
 
 @media only screen and (max-width: 863px){
     .stock-exchange-script-menu{
-        grid-template-columns: auto;
+        grid-template-columns: 1fr;
     }
 
     .stock-exchange-category{
@@ -1500,6 +1537,14 @@ ul {
 
     .home-page-product-card{
         height: 460px;
+    }
+
+    .change-password-wrap{
+        width: 80%;
+    }
+
+    .change-password-wrap form{
+        width: 100%;
     }
 }
 
