@@ -1,3 +1,19 @@
+<<<<<<< Updated upstream:product-detail.html
+=======
+<?php
+session_start();
+
+include 'functions.php';
+include 'kitlab_db.php';
+
+if($_SERVER["REQUEST_METHOD"] == "GET"){
+    $product = load_product_details($_GET['id']);
+    $user = get_user_by_id($product['user_id']);
+}
+
+?>
+
+>>>>>>> Stashed changes:product-detail.php
 <!DOCTYPE html>
 <html lang="cs" dir="ltr">
 
@@ -43,30 +59,25 @@
     </header>
     <div class="product-detail">
             <section class="product-detail-images">
-                <div class="product-detail-images-main">
-                    <img src="./book1.jpg" alt="Fotografie nabízených skript">
-                </div>
-                <div class="product-detail-images-others">
-                    <img src="./book2.jpg" alt="Fotografie nabízených skript">
-                    <img src="./book3.jpg" alt="Fotografie nabízených skript">
-                    <img src="./book4.jpg" alt="Fotografie nabízených skript">
-                </div>
+                <img src="data:image/jpg;charset=utf8;base64,<?php echo base64_encode($product["image"]) ?>" alt="Fotografie nabízených skript">
             </section>
             <section class="product-detail-description">
-                <h1>Název</h1>
-                <div class="product-detail-description-condition"><span>Popis a stav</span></div>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. A ut repellat aspernatur soluta nisi sapiente voluptate facilis similique quibusdam excepturi!</p>
+                <h1><?php echo $product['title']?></h1>
+                <div class="product-detail-description-condition">
+                    <p><?php echo $product['description']?></p>
+                </div>
+                
             </section>
             <section class="product-detail-advertiser">
                 <div class="product-detail-advertiser-personal-data">
-                    <div><span>Jméno inzerenta:</span><span></span></div>
-                    <div><span>Telefon:</span><span></span></div>
-                    <div><span>Email:</span><span></span></div>
+                    <div><span>Jméno inzerenta: </span><span><?php echo $user['fname'] . " " . $user['lname']?></span></div>
+                    <div><span>Telefon: </span><span><?php echo $user['phone']?></span></div>
+                    <div><span>Email: </span><span><?php echo $user['email']?></span></div>
                 </div>
                 <hr>
                 <div class="product-detail-advertiser-price">
-                    <div><span>Vidělo lidí:</span><span></span></div>
-                    <div><span>Cena:</span><span></span></div>
+                    <div><span>Vidělo lidí: </span><span><?php echo $product['views']?></span></div>
+                    <div><span>Cena: </span><span><?php echo $product['price'] . " Kč"?></span></div>
                 </div>
             </section>
             <section class="product-detail-contact-advertiser">

@@ -886,32 +886,17 @@ ul {
 .product-detail-images{
     display: flex;
     flex-direction: row;
-    flex: 65%;
+    flex: 60%;
 }
 
-.product-detail-images-main{
-    flex: 70%;
-}
 
-.product-detail-images-main img{
-    max-width: 100%;
+.product-detail-images img{
+    max-width: 40vw;
     vertical-align: middle;
 }
 
-.product-detail-images-others{
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    flex: 30%;
-}
-
-.product-detail-images-others img{
-    max-width: 50%;
-}
-
 .product-detail-description{
-    flex: 35%;
+    flex: 40%;
 }
 
 .product-detail-description-condition{
@@ -939,6 +924,10 @@ ul {
 
 .product-detail-advertiser, .product-detail-contact-advertiser{
     margin-top: 3rem;
+}
+
+.product-detail-contact-advertiser{
+    display: none;
 }
 
 .product-detail-contact-advertiser{
@@ -1018,7 +1007,7 @@ ul {
 
 .stock-exchange-category{
     margin-right: 2rem;
-    width: 20%;
+    width: 20vw;
 }
 
 .stock-exchange-category-list{
@@ -1026,9 +1015,32 @@ ul {
 }
 
 .stock-exchange-script{
+<<<<<<< Updated upstream
     width: 80%;
 }
 
+=======
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 80vw;
+}
+
+.stock-exchange-script form{
+    margin-top: 1rem;
+}
+
+.stock-exchange-script form input{
+    padding: 0.5rem 1rem;
+    font-size: 1.2rem;
+}
+
+.product_not_found{
+    text-align: center;
+    grid-column: 2;
+}
+
+>>>>>>> Stashed changes
 .stock-exchange-script-menu{
     display: grid;
     grid-template-columns: auto auto auto;
@@ -1431,6 +1443,10 @@ ul {
     .product-detail-contact-advertiser{
         padding-left: 0;
         border: none;
+    }
+
+    .product-detail-images img{
+        max-width: 80vw;
     }
 }
 
