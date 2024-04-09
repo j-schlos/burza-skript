@@ -1015,15 +1015,10 @@ ul {
 }
 
 .stock-exchange-script{
-<<<<<<< Updated upstream
-    width: 80%;
-}
-
-=======
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 80vw;
+    width: 80%;
 }
 
 .stock-exchange-script form{
@@ -1035,12 +1030,6 @@ ul {
     font-size: 1.2rem;
 }
 
-.product_not_found{
-    text-align: center;
-    grid-column: 2;
-}
-
->>>>>>> Stashed changes
 .stock-exchange-script-menu{
     display: grid;
     grid-template-columns: auto auto auto;
